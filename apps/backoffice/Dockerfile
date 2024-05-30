@@ -19,9 +19,6 @@ WORKDIR /app
 COPY .gitignore .gitignore
 COPY --from=builder /app/out/json/ .
 COPY --from=builder /app/out/package-lock.json ./package-lock.json
-#NEW
-COPY --from=builder /app/node_modules ./node_modules
-#---
 RUN npm ci --no-audit
 
 # Build the project
@@ -46,10 +43,10 @@ COPY --from=installer /app/apps/backoffice/package.json .
 
 COPY --from=installer --chown=nextjs:nodejs /app/apps/backoffice/.next/standalone ./
 COPY --from=installer --chown=nextjs:nodejs /app/apps/backoffice/.next/static ./apps/backoffice/.next/static
-COPY --from=installer --chown=nextjs:nodejs /app/apps/backoffice/public ./apps/backoffice/public
+# COPY --from=installer --chown=nextjs:nodejs /app/apps/backoffice/public ./apps/backoffice/public
 
 
 EXPOSE 3002
-ENV PORT = 3002
+ENV PORT 3002
 
 CMD HOSTNAME="0.0.0.0" node apps/backoffice/server.js
