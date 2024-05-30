@@ -26,7 +26,12 @@ export default function Home() {
         const data = await getFetch({
           url: '/v1/users/97393956',
           options: options
-        }).then((data)=>console.log(data))
+        }).then((data)=>console.log("Data fetch ",data))
+
+        const aux = axios.get(
+          process.env.NEXT_PUBLIC_API_URL+'/v1/users/97393956'
+        ).then((aux)=>console.log("Data AXIOS BIEN ",aux))
+
       } catch (error) { console.log(error) }
     }
 
