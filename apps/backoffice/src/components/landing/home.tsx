@@ -1,7 +1,7 @@
 'use client';
 import { DashBoardPageUrl, SignInPageUrl } from "@/constants/urls";
 import Features from "./features";
-import { useSession } from "next-auth/react";
+import { useSession, useEffect } from "next-auth/react";
 import Navbar from "../dashboard/Navbar";
 
 export default function Home() {
