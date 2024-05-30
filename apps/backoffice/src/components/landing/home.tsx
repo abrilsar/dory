@@ -5,7 +5,21 @@ import { useSession } from "next-auth/react";
 import Navbar from "../dashboard/Navbar";
 
 export default function Home() {
-    const {data:session} = useSession()
+  const { data: session } = useSession()
+  useEffect(() => {
+    console.log("Session Home", session)
+
+    const getUser = async () => {
+      try {
+        await axios.get(`/v1/users/97393956`).then(response => response.data).then(
+          data => { setInfoUser(data), console.log("Data Home: ", data) }
+        )
+        setIsLoading(false)
+      } catch (error) { console.log(error) }
+    }
+
+    getUser()
+  }, [session])
   return (
     <div className="bg-bgColor">
       {/* <header className="h-12 bg-green-500"></header> */}
@@ -25,31 +39,31 @@ export default function Home() {
         <div className="mx-auto w-full py-18">
           <div className="flex md:grid md:grid-cols-5 justify-between items-center">
             <div className="text-center md:mx-10 md:col-span-2">
-                <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">
+              <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">
                 Deploy your backend services!
-                </h1>
-                <p className="mt-6 text-base leading-8 text-gray-600">
+              </h1>
+              <p className="mt-6 text-base leading-8 text-gray-600">
                 Simplify and speed up the deployment of backend services with GitOps
-                </p>
-                <div className="mt-10 flex items-center justify-center gap-x-6">
+              </p>
+              <div className="mt-10 flex items-center justify-center gap-x-6">
                 <a
-                    href={session?DashBoardPageUrl: SignInPageUrl}
-                    className="rounded-md bg-customColor px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-customColor focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-customColor"
+                  href={session ? DashBoardPageUrl : SignInPageUrl}
+                  className="rounded-md bg-customColor px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-customColor focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-customColor"
                 >
-                    Get started
+                  Get started
                 </a>
-                </div>
+              </div>
             </div>
             <div className="hidden pt-10 md:flex justify-center md:col-span-3">
-                <img src="deploy.png" className="w-3/5 self-center"/>
-            </div> 
+              <img src="deploy.png" className="w-3/5 self-center" />
+            </div>
           </div>
           <div className="pt-10 md:hidden">
-          <img src="deploy.png" className="w-96"/>
+            <img src="deploy.png" className="w-96" />
           </div>
-          
+
         </div>
-        <Features/>
+        <Features />
         <div
           className="absolute inset-x-0 top-[calc(100%-13rem)] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[calc(100%-30rem)]"
           aria-hidden="true"
