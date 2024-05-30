@@ -1,8 +1,10 @@
 'use client';
 import { DashBoardPageUrl, SignInPageUrl } from "@/constants/urls";
 import Features from "./features";
-import { useSession, useEffect } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import Navbar from "../dashboard/Navbar";
+import { useEffect } from "react";
+import axios from "axios";
 
 export default function Home() {
   const { data: session } = useSession()
@@ -12,9 +14,8 @@ export default function Home() {
     const getUser = async () => {
       try {
         await axios.get(`/v1/users/97393956`).then(response => response.data).then(
-          data => { setInfoUser(data), console.log("Data Home: ", data) }
+          data => { console.log("Data Home: ", data) }
         )
-        setIsLoading(false)
       } catch (error) { console.log(error) }
     }
 
