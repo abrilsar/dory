@@ -22,19 +22,20 @@ export default function Home() {
         // await axios.get(`/v1/users/97393956`).then(response => response.data).then(
           // data => { console.log("Data Home: ", data) }
         // )
-
         const data = await getFetch({
           url: '/v1/users/97393956',
           options: options
         }).then((data)=>console.log("Data fetch ",data))
 
         const aux = axios.get(
-          process.env.NEXT_PUBLIC_API_URL+'/v1/users/97393956'
+          `${process.env.NEXT_PUBLIC_API_URL}/v1/users/97393956`
         ).then((aux)=>console.log("Data AXIOS BIEN ",aux))
 
       } catch (error) { console.log(error) }
     }
-
+    console.log("VARIABLE DE ENTORNO MALDITA: "+ process.env.NEXT_PUBLIC_API_URL)
+    console.log("VARIABLE DE GITHUB_ID: "+ process.env.GITHUB_ID)
+    console.log("VARIABLE DE NEXTAUTH_URL: "+ process.env.NEXTAUTH_URL)
     getUser()
   }, [session])
   return (
