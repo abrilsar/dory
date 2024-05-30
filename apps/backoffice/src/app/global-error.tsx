@@ -1,24 +1,24 @@
-'use client';
+// 'use client';
 
-import * as Sentry from '@sentry/nextjs';
-import { useEffect } from 'react';
+// import * as Sentry from '@sentry/nextjs';
+// import { useEffect } from 'react';
 
-type Props = {
-  error: Error & { digest?: string };
-  reset: () => void;
-};
+// type Props = {
+//   error: Error & { digest?: string };
+//   reset: () => void;
+// };
 
-export default function GlobalError({ error, reset }: Props) {
-  useEffect(() => {
-    Sentry.captureException(error);
-  }, [error]);
+// export default function GlobalError({ error, reset }: Props) {
+//   useEffect(() => {
+//     Sentry.captureException(error);
+//   }, [error]);
 
-  return (
-    <html>
-      <body>
-        <h2>Something went wrong!</h2>
-        <button onClick={() => reset()}>Try again</button>
-      </body>
-    </html>
-  );
-}
+//   return (
+//     <html>
+//       <body>
+//         <h2>Something went wrong!</h2>
+//         <button onClick={() => reset()}>Try again</button>
+//       </body>
+//     </html>
+//   );
+// }
