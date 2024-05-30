@@ -5,17 +5,28 @@ import { useSession } from "next-auth/react";
 import Navbar from "../dashboard/Navbar";
 import { useEffect } from "react";
 import axios from "axios";
+import { getFetch } from "@/lib/api";
 
 export default function Home() {
   const { data: session } = useSession()
   useEffect(() => {
     console.log("Session Home", session)
 
+    const options = {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' },
+    };
+
     const getUser = async () => {
       try {
-        await axios.get(`/v1/users/97393956`).then(response => response.data).then(
-          data => { console.log("Data Home: ", data) }
-        )
+        // await axios.get(`/v1/users/97393956`).then(response => response.data).then(
+          // data => { console.log("Data Home: ", data) }
+        // )
+
+        const data = await getFetch({
+          url: '/v1/users/97393956',
+          options: options
+        })
       } catch (error) { console.log(error) }
     }
 
