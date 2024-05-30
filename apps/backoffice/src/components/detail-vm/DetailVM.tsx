@@ -12,7 +12,7 @@ import { Deploy } from "types/interfaces";
 import { DashBoardPageUrl } from "@/constants/urls";
 import { XMarkIcon } from '@heroicons/react/24/outline'
 // import { useHtmlEscape } from "@/hooks/useHtlmEscape";
-import { AnsiUp } from 'ansi_up/ansi_up';
+// import { AnsiUp } from 'ansi_up/ansi_up';
 import { Terminal } from '@xterm/xterm';
 import '@xterm/xterm/css/xterm.css';
 import { Poppins, Sanchez } from "next/font/google";
@@ -32,7 +32,7 @@ export default function DetailVM() {
     const xterm = useRef<Terminal | null>(null);
     const [allow, setAllow] = useState(true)
     // const { getHtmlEscape } = useHtmlEscape()
-    const ansi_up = new AnsiUp();
+    // const ansi_up = new AnsiUp();
 
 
 
@@ -138,9 +138,7 @@ export default function DetailVM() {
                     event.data === 'Terraform process completed successfully' ? setSuccessProcess(true) : setSuccessProcess(false)
                     // afterTerraform(event.data === 'Terraform process completed successfully' ? true : false)
                 }
-                const htmlOutput = ansi_up.ansi_to_html(event.data)
-                const outputWithoutTags = htmlOutput.replace(/<[^>]+>/g, '')
-                setOutput((prevOutput) => `${prevOutput}\n${outputWithoutTags}`);
+                setOutput((prevOutput) => `${prevOutput}\n${event.data}`);
                 xterm.current?.writeln(event.data);
                 console.log("output 1: ", output)
 
