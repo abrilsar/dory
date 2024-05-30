@@ -1,0 +1,27 @@
+version: '3'
+services:
+  api:
+    container_name: api
+    build:
+      context: .
+      dockerfile: ./apps/api/Dockerfile
+    ports:
+      - '3000:3000'
+    environment:
+      - NODE_ENV=$NODE_ENV
+      - PORT=$PORT
+      - HOST=$HOST
+      - JWT_SECRET=$JWT_SECRET
+      - DATABASE=$DATABASE
+      - CORS_ORIGINS=$CORS_ORIGINS
+  backoffice:
+    container_name: nextjs
+    build:
+      context: .
+      dockerfile: ./apps/backoffice/Dockerfile
+    ports:
+      - '3002:3002'
+    environment:
+      - NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+      - NEXTAUTH_URL=$NEXTAUTH_URL
+      - NEXTAUTH_SECRET=$NEXTAUTH_SECRET

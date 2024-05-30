@@ -1,0 +1,7 @@
+{
+  "conventionalCommits.scopes": [
+    "api",
+    "admin"
+  ],
+  "editor.formatOnSave": true
+}
