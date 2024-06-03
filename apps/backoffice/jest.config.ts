@@ -25,5 +25,8 @@ const config = {
   // },
 };
 
+console.log("jest", process.env.NEXTAUTH_URL)
+console.log("jest", process.env.NEXT_PUBLIC_API_URL)
+
 // createJestConfig is exported this way to ensure that next/jest can load the Next.js config which is async
 export default createJestConfig(config) as any;

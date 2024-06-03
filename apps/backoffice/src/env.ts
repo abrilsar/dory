@@ -14,3 +14,5 @@ export const env = createEnv({
     API_URL: process.env.NEXT_PUBLIC_API_URL,
   },
 });
+
+console.log("env: ", process.env.NEXT_PUBLIC_API_URL)
