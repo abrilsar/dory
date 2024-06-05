@@ -24,14 +24,14 @@ services:
       context: .
       dockerfile: ./apps/backoffice/Dockerfile
       args:
-        - NEXT_PUBLIC_API_URL: https://api.dory14.deploy-tap.site
-        - NEXT_PUBLIC_DO_TOKEN: asd
-        - NEXT_PUBLIC_PATH_SSH: /etc/.ssh/
-        - NEXT_PUBLIC_API_SS: e78270
-        - NEXT_PUBLIC_PWD: 123
-        - NEXTAUTH_URL: https://dory14.deploy-tap.site
-        - NEXTAUTH_SECRET: d63c2b29a80516e8f0b209a5b5ef76ea59dd0e26a66e312703dcd128c418bb7e
-        - GITHUB_ID: Iv1.24235745bbc5800e
-        - GITHUB_SECRET: 3e4cd5efc1bdc674cee24e1990eb9a1c523847a3
+        - NEXT_PUBLIC_API_URL=https://api.dory14.deploy-tap.site
+        - NEXT_PUBLIC_DO_TOKEN=asd
+        - NEXT_PUBLIC_PATH_SSH=/etc/.ssh/
+        - NEXT_PUBLIC_API_SS=e78270
+        - NEXT_PUBLIC_PWD=123
+        - NEXTAUTH_URL=https://dory14.deploy-tap.site
+        - NEXTAUTH_SECRET=d63c2b29a80516e8f0b209a5b5ef76ea59dd0e26a66e312703dcd128c418bb7e
+        - GITHUB_ID=Iv1.24235745bbc5800e
+        - GITHUB_SECRET=3e4cd5efc1bdc674cee24e1990eb9a1c523847a3
     ports:
     - '3002:3002'
