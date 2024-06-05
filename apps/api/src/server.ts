@@ -44,6 +44,8 @@ export async function createServer() {
 
   await server.register(rateLimit);
   if (process.env.NODE_ENV === 'production') {
+    console.log("NODE_ENV: ", process.env.NODE_ENV)
+    console.log("DATABASE: ", process.env.DATABASE)
     await server.register(helmet);
   } else {
     await swaggerPlugin(server);

@@ -19,9 +19,9 @@ export default function Home() {
 
     const getUser = async () => {
       try {
-        await axios.get(`/v1/users/97393956`).then(response => response.data).then(
-          data => { console.log("Data AXIOS malo: ", data) }
-        )
+        // await axios.get(`/v1/users/97393956`).then(response => response.data).then(
+        //   data => { console.log("Data AXIOS malo: ", data) }
+        // )
         const data = await getFetch({
           url: '/v1/users/97393956',
           options: options

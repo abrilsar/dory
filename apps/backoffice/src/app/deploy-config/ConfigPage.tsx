@@ -45,7 +45,7 @@ export default function ConfigPage() {
             </div>
             <div className="sm:px-0 py-6 sm:py-0 sm:flex items-center justify-between">
               {/* <div className="flex items-center"> */}
-              <div className="flex gap-2 mr-12">
+              <div className="flex gap-2 mr-3">
                 <dt className="text-sm font-medium leading-6 text-gray-900 truncate">Add your app</dt>
                 <TooltipWithHelperIcon />
               </div>
