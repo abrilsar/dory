@@ -17,6 +17,7 @@ services:
       - GITHUB_SECRET=$GITHUB_SECRET
       - DO_TOKEN=$DO_TOKEN
       - PATH_SSH=$PATH_SSH
+      - CORS_ORIGINS=$CORS_ORIGINS
   backoffice:
     container_name: nextjs
     build:

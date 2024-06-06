@@ -4,8 +4,7 @@ import Features from "./features";
 import { useSession } from "next-auth/react";
 import Navbar from "../dashboard/Navbar";
 import { useEffect } from "react";
-import axios from "axios";
-import { getFetch } from "@/lib/api";
+import { getFetch , axios} from "@/lib/api";
 
 export default function Home() {
   const { data: session } = useSession()
@@ -19,17 +18,17 @@ export default function Home() {
 
     const getUser = async () => {
       try {
-        // await axios.get(`/v1/users/97393956`).then(response => response.data).then(
-        //   data => { console.log("Data AXIOS malo: ", data) }
-        // )
+        await axios.get(`/v1/users/97393956`).then(response => response.data).then(
+          data => { console.log("Data AXIOS buenecito: ", data) }
+        )
         const data = await getFetch({
           url: '/v1/users/97393956',
           options: options
         }).then((data)=>console.log("Data fetch ",data))
 
-        const aux = axios.get(
-          `${process.env.NEXT_PUBLIC_API_URL}/v1/users/97393956`
-        ).then((aux)=>console.log("Data AXIOS BIEN ",aux))
+        // const aux = axios.get(
+        //   `${process.env.NEXT_PUBLIC_API_URL}/v1/users/97393956`
+        // ).then((aux)=>console.log("Data AXIOS BIEN ",aux))
 
       } catch (error) { console.log(error) }
     }
