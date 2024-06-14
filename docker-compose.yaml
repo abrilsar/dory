@@ -1,47 +1,47 @@
 version: "3"
 services:
-  api:
-    container_name: api
-    build:
-      context: .
-      dockerfile: ./apps/api/Dockerfile
-    ports:
-      - "3000:3000"
-    environment:
-      - NODE_ENV=$NODE_ENV
-      - PORT=$PORT
-      - HOST=$HOST
-      - JWT_SECRET=$JWT_SECRET
-      - DATABASE=$DATABASE
-      - GITHUB_ID=$GITHUB_ID
-      - GITHUB_SECRET=$GITHUB_SECRET
-      - DO_TOKEN=$DO_TOKEN
-      - PATH_SSH=$PATH_SSH
-      - CORS_ORIGINS=$CORS_ORIGINS
-  # backoffice:
-  #   container_name: nextjs
+  # api:
+  #   container_name: api
   #   build:
   #     context: .
-  #     dockerfile: ./apps/backoffice/Dockerfile
-  #     # args:
-  #     #   - NEXT_PUBLIC_API_URL=https://api.dory14.deploy-tap.site
-  #     #   - NEXT_PUBLIC_DO_TOKEN=asd
-  #     #   - NEXT_PUBLIC_PATH_SSH=/etc/.ssh/
-  #     #   - NEXT_PUBLIC_API_SS=e78270
-  #     #   - NEXT_PUBLIC_PWD=123
-  #     #   - NEXTAUTH_URL=https://dory14.deploy-tap.site
-  #     #   - NEXTAUTH_SECRET=d63c2b29a80516e8f0b209a5b5ef76ea59dd0e26a66e312703dcd128c418bb7e
-  #     #   - GITHUB_ID=Iv1.24235745bbc5800e
-  #     #   - GITHUB_SECRET=3e4cd5efc1bdc674cee24e1990eb9a1c523847a3
-  #     args:
-  #       - NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
-  #       - NEXTAUTH_URL=$NEXTAUTH_URL
-  #       - NEXTAUTH_SECRET=$NEXTAUTH_SECRET
-  #       - GITHUB_ID=$GITHUB_ID
-  #       - GITHUB_SECRET=$GITHUB_SECRET
-  #       - NEXT_PUBLIC_DO_TOKEN=$NEXT_PUBLIC_DO_TOKEN
-  #       - NEXT_PUBLIC_PATH_SSH=$NEXT_PUBLIC_PATH_SSH
-  #       - NEXT_PUBLIC_API_SS=$NEXT_PUBLIC_API_SS
-  #       - NEXT_PUBLIC_PWD=$NEXT_PUBLIC_PWD
+  #     dockerfile: ./apps/api/Dockerfile
   #   ports:
-  #     - "3002:3002"
+  #     - "3000:3000"
+  #   environment:
+  #     - NODE_ENV=$NODE_ENV
+  #     - PORT=$PORT
+  #     - HOST=$HOST
+  #     - JWT_SECRET=$JWT_SECRET
+  #     - DATABASE=$DATABASE
+  #     - GITHUB_ID=$GITHUB_ID
+  #     - GITHUB_SECRET=$GITHUB_SECRET
+  #     - DO_TOKEN=$DO_TOKEN
+  #     - PATH_SSH=$PATH_SSH
+  #     - CORS_ORIGINS=$CORS_ORIGINS
+  backoffice:
+    container_name: nextjs
+    build:
+      context: .
+      dockerfile: ./apps/backoffice/Dockerfile
+      # args:
+      #   - NEXT_PUBLIC_API_URL=https://api.dory14.deploy-tap.site
+      #   - NEXT_PUBLIC_DO_TOKEN=asd
+      #   - NEXT_PUBLIC_PATH_SSH=/etc/.ssh/
+      #   - NEXT_PUBLIC_API_SS=e78270
+      #   - NEXT_PUBLIC_PWD=123
+      #   - NEXTAUTH_URL=https://dory14.deploy-tap.site
+      #   - NEXTAUTH_SECRET=d63c2b29a80516e8f0b209a5b5ef76ea59dd0e26a66e312703dcd128c418bb7e
+      #   - GITHUB_ID=Iv1.24235745bbc5800e
+      #   - GITHUB_SECRET=3e4cd5efc1bdc674cee24e1990eb9a1c523847a3
+      args:
+        - NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+        - NEXTAUTH_URL=$NEXTAUTH_URL
+        - NEXTAUTH_SECRET=$NEXTAUTH_SECRET
+        - GITHUB_ID=$GITHUB_ID
+        - GITHUB_SECRET=$GITHUB_SECRET
+        - NEXT_PUBLIC_DO_TOKEN=$NEXT_PUBLIC_DO_TOKEN
+        - NEXT_PUBLIC_PATH_SSH=$NEXT_PUBLIC_PATH_SSH
+        - NEXT_PUBLIC_API_SS=$NEXT_PUBLIC_API_SS
+        - NEXT_PUBLIC_PWD=$NEXT_PUBLIC_PWD
+    ports:
+      - "3002:3002"
