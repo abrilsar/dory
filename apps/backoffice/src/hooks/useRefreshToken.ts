@@ -9,40 +9,44 @@ import { useEffect, useState } from "react";
 import { string } from "zod";
 
 type ResponseType = {
-    new_token: string,
-    error: string
-}
+  new_token: string;
+  error: string;
+};
 export const useRefreshToken = (initialErrorStatus: number) => {
-    const { data: session, update } = useSession();
-    const [errorStatus, setErrorStatus] = useState(initialErrorStatus);
+  const { data: session, update } = useSession();
+  const [errorStatus, setErrorStatus] = useState(initialErrorStatus);
 
-    const getRefreshToken = async (newErrorStatus: number) => {
-        setErrorStatus(newErrorStatus)
-        if (newErrorStatus === 401) {
-            try {
-                const data: ResponseType = await axios.post('/v1/github-app/refresh-token', { _id: session?.user._id }).then(response => response.data);
-                if (data?.error === 'RefreshAccessTokenError' || data?.new_token === null) {
-                    signOut({ callbackUrl: SignInPageUrl })
-                } else {
-                    const newSession = await update({
-                        ...session,
-                        user: {
-                            ...session?.user,
-                            token: data?.new_token,
-                        }
-                    });
-                    console.log("Se cambio el refreshToken", session?.user.token)
-                    return newSession
-                }
-            } catch (error) {
-                console.log('error en el useRefreseTOken')
-                signOut({ callbackUrl: SignInPageUrl })
-
-                // Manejar errores de actualización de token
-            }
+  const getRefreshToken = async (newErrorStatus: number) => {
+    setErrorStatus(newErrorStatus);
+    if (newErrorStatus === 401) {
+      try {
+        const data: ResponseType = await axios
+          .post("/v1/github-app/refresh-token", { _id: session?.user._id })
+          .then((response) => response.data);
+        if (
+          data?.error === "RefreshAccessTokenError" ||
+          data?.new_token === null
+        ) {
+          signOut({ callbackUrl: SignInPageUrl });
+        } else {
+          const newSession = await update({
+            ...session,
+            user: {
+              ...session?.user,
+              token: data?.new_token,
+            },
+          });
+          console.log("Se cambio el refreshToken", session?.user.token);
+          return newSession;
         }
-    };
+      } catch (error) {
+        console.log("error en el useRefreseTOken");
+        signOut({ callbackUrl: SignInPageUrl });
 
+        // Manejar errores de actualización de token
+      }
+    }
+  };
 
-    return { errorStatus, setErrorStatus, getRefreshToken };
+  return { errorStatus, setErrorStatus, getRefreshToken };
 };

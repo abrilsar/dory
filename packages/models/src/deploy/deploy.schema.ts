@@ -1,6 +1,6 @@
-import type { z } from 'zod';
-import { Schema, Types, type Document } from 'mongoose';
-import { deployDefinition } from './deploy.dto';
+import type { z } from "zod";
+import { Schema, Types, type Document } from "mongoose";
+import { deployDefinition } from "./deploy.dto";
 
 const configType = {
   domain: String,
@@ -9,11 +9,13 @@ const configType = {
   env: Boolean,
   apiUrl: String,
   endpoints: String,
-  apps: [{
-    _id: String,
-    name: String,
-    port: String
-  }]
+  apps: [
+    {
+      _id: String,
+      name: String,
+      port: String,
+    },
+  ],
 };
 
 const repoType = {
@@ -21,11 +23,13 @@ const repoType = {
   source: String,
   repositoryLink: String,
   lastCommit: Number,
-  commits: [{
-    _id: String,
-    time: String,
-    previous: Number
-  }]
+  commits: [
+    {
+      _id: String,
+      time: String,
+      previous: Number,
+    },
+  ],
 };
 
 export type IDeploy = z.infer<typeof deployDefinition>;
@@ -35,19 +39,19 @@ export const deploySchema = new Schema<IDeploy, DeployDocument>(
   {
     config: {
       type: configType,
-      required: [true, ''],
+      required: [true, ""],
       trim: true,
     },
 
     repository: {
       type: repoType,
-      required: [true, ''],
+      required: [true, ""],
       trim: true,
     },
     terraformVar: {
       type: Schema.Types.ObjectId,
-      required: [true, ''],
+      required: [true, ""],
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );

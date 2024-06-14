@@ -1,20 +1,20 @@
-import nextJest from 'next/jest.js';
-import dotenv from 'dotenv';
-import { set } from 'zod';
+import nextJest from "next/jest.js";
+import dotenv from "dotenv";
+import { set } from "zod";
 
 // load .env.test environment variables
-dotenv.config({ path: '.env.local' });
+dotenv.config({ path: ".env.local" });
 
 const createJestConfig = nextJest({
   // Provide the path to your Next.js app to load next.config.js and .env files in your test environment
-  dir: './',
+  dir: "./",
 });
 
 // Add any custom config to be passed to Jest
 const config = {
-  coverageProvider: 'v8',
-  testEnvironment: 'jsdom',
-  setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
+  coverageProvider: "v8",
+  testEnvironment: "jsdom",
+  setupFilesAfterEnv: ["<rootDir>/jest.setup.ts"],
   // setupFiles: ['<rootDir>/jest.pollyfils.ts'],
 
   // moduleNameMapper: {

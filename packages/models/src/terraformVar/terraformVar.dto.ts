@@ -1,6 +1,5 @@
-import { z } from 'zod';
-import { Schema, Types, type Document } from 'mongoose';
-
+import { z } from "zod";
+import { Schema, Types, type Document } from "mongoose";
 
 export const terraformVarDefinition = z.object({
   size: z.string(),

@@ -45,7 +45,7 @@ export default function DetailVM() {
     useEffect(() => {
       const websiteUrl = encodeURIComponent(url);
       fetch(
-        `https://api.screenshotmachine.com/?key=${apiKey}&url=${websiteUrl}&dimension=1024x768`
+        `https://api.screenshotmachine.com/?key=${apiKey}&url=${websiteUrl}&dimension=1024x768`,
       )
         .then((response) => response.blob())
         .then((blob) => {
@@ -78,7 +78,7 @@ export default function DetailVM() {
 
   const getDomain = () => {
     const verifyDomain = envState.appList.some(
-      (env) => env.name === envState.terraformVar.name_project
+      (env) => env.name === envState.terraformVar.name_project,
     );
     return `https://www.${verifyDomain ? envState.terraformVar.name_project.toLowerCase() : envState.appList[0]?.name}.deploy-tap.site`;
   };
@@ -160,7 +160,7 @@ export default function DetailVM() {
       }
       await axios.post(
         "/v1/terraform/delete",
-        "./terraform/create/terraform.tfstate"
+        "./terraform/create/terraform.tfstate",
       );
       state.env =
         envState.appList.length === 0 && envState.envString === ""
@@ -175,7 +175,7 @@ export default function DetailVM() {
       let allow = false;
 
       const eventSource = new EventSource(
-        `${process.env.NEXT_PUBLIC_API_URL}/v1/terraform/deploy`
+        `${process.env.NEXT_PUBLIC_API_URL}/v1/terraform/deploy`,
       );
 
       eventSource.onopen = () => {

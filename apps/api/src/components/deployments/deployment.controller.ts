@@ -1,6 +1,5 @@
-import type { FastifyRequest, FastifyReply } from 'fastify';
-import { deploymentService } from '@/components/deployments/deployment.service';
-
+import type { FastifyRequest, FastifyReply } from "fastify";
+import { deploymentService } from "@/components/deployments/deployment.service";
 
 interface ParamsType {
   id: string;
@@ -13,20 +12,25 @@ interface RequestBody {
 async function findAll(request: FastifyRequest, reply: FastifyReply) {
   return deploymentService.findAll({});
 }
-async function findOne(request: FastifyRequest<{ Params: ParamsType }>, reply: FastifyReply) {
+async function findOne(
+  request: FastifyRequest<{ Params: ParamsType }>,
+  reply: FastifyReply,
+) {
   return deploymentService.findOne(request.params.id);
 }
-
 
 async function createDeployment(request: FastifyRequest, reply: FastifyReply) {
   return deploymentService.createDeployment(request.body);
 }
 
-async function deleteOne(request: FastifyRequest<{ Params: ParamsType }>, reply: FastifyReply) {
+async function deleteOne(
+  request: FastifyRequest<{ Params: ParamsType }>,
+  reply: FastifyReply,
+) {
   const args = {
     _id: request.params.id,
-    user_id: (request.body as RequestBody).user_id
-  }
+    user_id: (request.body as RequestBody).user_id,
+  };
   return deploymentService.deleteOne(args);
 }
 
@@ -39,6 +43,5 @@ export const deploymentController = Object.freeze({
   createDeployment,
   deleteOne,
   findOne,
-  updateOne
+  updateOne,
 });
-

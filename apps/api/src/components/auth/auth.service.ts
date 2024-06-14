@@ -1,5 +1,5 @@
-import jwt from 'jsonwebtoken';
-import { TSignInInput } from './auth.dto';
+import jwt from "jsonwebtoken";
+import { TSignInInput } from "./auth.dto";
 
 /**
  * @async
@@ -19,8 +19,8 @@ import { TSignInInput } from './auth.dto';
 
 async function signIn(data: TSignInInput) {
   const user = {
-    _id: '6553f84c18a72845d4ce631f',
-    name: 'Jose',
+    _id: "6553f84c18a72845d4ce631f",
+    name: "Jose",
     email: data.email,
     createdAt: new Date(),
     updatedAt: new Date(),

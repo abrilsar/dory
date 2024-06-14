@@ -1,6 +1,6 @@
-import type { z } from 'zod';
-import { Schema, Types, type Document } from 'mongoose';
-import { userDefinition } from './user.dto';
+import type { z } from "zod";
+import { Schema, Types, type Document } from "mongoose";
+import { userDefinition } from "./user.dto";
 
 const authType = {
   accessToken: String,
@@ -16,17 +16,17 @@ export const userSchema = new Schema<IUser, UserDocument>(
   {
     _id: {
       type: String,
-      required: [true, ''],
+      required: [true, ""],
       trim: true,
     },
     name: {
       type: String,
-      required: [true, ''],
+      required: [true, ""],
       trim: true,
     },
     email: {
       type: String,
-      required: [true, ''],
+      required: [true, ""],
       trim: true,
       lowercase: true,
     },
@@ -36,9 +36,9 @@ export const userSchema = new Schema<IUser, UserDocument>(
     },
     auth: {
       type: authType,
-      required: [true, ''],
-      default: {}
-    }
+      required: [true, ""],
+      default: {},
+    },
   },
-  { timestamps: true }
+  { timestamps: true },
 );

@@ -1,25 +1,28 @@
-'use client'
-import { Fragment, useEffect, useState } from 'react'
-import { Disclosure, Menu, Transition, } from '@headlessui/react'
-import { DashBoardPageUrl, LandingPageUrl, SignInPageUrl } from '@/constants/urls'
-import { signOut, useSession } from 'next-auth/react'
-import Link from 'next/link'
-import { useRouter } from 'next/navigation'
-
+"use client";
+import { Fragment, useEffect, useState } from "react";
+import { Disclosure, Menu, Transition } from "@headlessui/react";
+import {
+  DashBoardPageUrl,
+  LandingPageUrl,
+  SignInPageUrl,
+} from "@/constants/urls";
+import { signOut, useSession } from "next-auth/react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(' ')
+  return classes.filter(Boolean).join(" ");
 }
 
 export default function Navbar() {
-  const { data: session } = useSession()
-  const router = useRouter()
-  const [isLandingPage, setIsLandingPage] = useState(false)
+  const { data: session } = useSession();
+  const router = useRouter();
+  const [isLandingPage, setIsLandingPage] = useState(false);
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
+    if (typeof window !== "undefined") {
       const currentPath = window.location.pathname;
-      setIsLandingPage(currentPath === LandingPageUrl)
+      setIsLandingPage(currentPath === LandingPageUrl);
     }
   }, []);
   return (
@@ -49,34 +52,52 @@ export default function Navbar() {
                   {/* Profile dropdown */}
                   <Menu as="div" className="relative ml-3">
                     <div>
-                      {isLandingPage && !session ?
-                        <div className='flex gap-x-3'>
-                          <button onClick={() => {
-                            router.push(SignInPageUrl);
-                            setIsLandingPage(false)
-                          }}
+                      {isLandingPage && !session ? (
+                        <div className="flex gap-x-3">
+                          <button
+                            onClick={() => {
+                              router.push(SignInPageUrl);
+                              setIsLandingPage(false);
+                            }}
                             className="rounded-md bg-customColor px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-customColor"
-                          >Sign in</button>
-                          <button onClick={() => {
-                            router.push(SignInPageUrl);
-                            setIsLandingPage(false)
-                          }}
+                          >
+                            Sign in
+                          </button>
+                          <button
+                            onClick={() => {
+                              router.push(SignInPageUrl);
+                              setIsLandingPage(false);
+                            }}
                             className="rounded-md bg-white border border-customColor text-black px-3.5 py-2.5 text-sm font-semibold shadow-sm hover:bg-customColor focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-customColor"
-                          >Sign up</button>
+                          >
+                            Sign up
+                          </button>
                         </div>
-                        :
+                      ) : (
                         <Link href={session ? DashBoardPageUrl : SignInPageUrl}>
-                          <Menu.Button className="relative flex items-center rounded-full bg-bgColor text-sm" disabled={session ? false : true}>
+                          <Menu.Button
+                            className="relative flex items-center rounded-full bg-bgColor text-sm"
+                            disabled={session ? false : true}
+                          >
                             <span className="absolute -inset-1.5" />
                             <span className="sr-only">Open user menu</span>
-                            <p className={`${session ? 'hidden sm:inline' : 'hidden'}`}>Hola, {session?.user.name}!</p>
+                            <p
+                              className={`${session ? "hidden sm:inline" : "hidden"}`}
+                            >
+                              Hola, {session?.user.name}!
+                            </p>
                             <img
                               className="h-8 w-8 ml-4 rounded-full focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-customColor"
-                              src={session ? session?.user.image! : 'https://images.rawpixel.com/image_png_social_square/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIzLTAxL3JtNjA5LXNvbGlkaWNvbi13LTAwMi1wLnBuZw.png'}
+                              src={
+                                session
+                                  ? session?.user.image!
+                                  : "https://images.rawpixel.com/image_png_social_square/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIzLTAxL3JtNjA5LXNvbGlkaWNvbi13LTAwMi1wLnBuZw.png"
+                              }
                               alt=""
                             />
                           </Menu.Button>
-                        </Link>}
+                        </Link>
+                      )}
                     </div>
                     <Transition
                       as={Fragment}
@@ -92,7 +113,10 @@ export default function Navbar() {
                           {({ active }) => (
                             <Link
                               href={DashBoardPageUrl}
-                              className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
+                              className={classNames(
+                                active ? "bg-gray-100" : "",
+                                "block px-4 py-2 text-sm text-gray-700",
+                              )}
                             >
                               Dashboard
                             </Link>
@@ -102,8 +126,13 @@ export default function Navbar() {
                           {({ active }) => (
                             <a
                               href="#"
-                              className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
-                              onClick={() => signOut({ callbackUrl: SignInPageUrl })}
+                              className={classNames(
+                                active ? "bg-gray-100" : "",
+                                "block px-4 py-2 text-sm text-gray-700",
+                              )}
+                              onClick={() =>
+                                signOut({ callbackUrl: SignInPageUrl })
+                              }
                             >
                               Sign out
                             </a>
@@ -119,5 +148,5 @@ export default function Navbar() {
         )}
       </Disclosure>
     </header>
-  )
+  );
 }

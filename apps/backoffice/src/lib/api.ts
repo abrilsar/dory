@@ -1,6 +1,6 @@
-import Axios from 'axios';
-import { useSession } from 'next-auth/react';
-import { z } from 'zod';
+import Axios from "axios";
+import { useSession } from "next-auth/react";
+import { z } from "zod";
 
 type TFetchInput<DataType> = {
   url: string;
@@ -8,11 +8,11 @@ type TFetchInput<DataType> = {
   options?: RequestInit;
 };
 
-
 export const getFetch = async <DataType>(
-  input: TFetchInput<DataType>): Promise<TFetchOutput<DataType>> => {
-  const url = input.url
-  const schema = input.schema || (z.any() as z.ZodType<DataType>)
+  input: TFetchInput<DataType>,
+): Promise<TFetchOutput<DataType>> => {
+  const url = input.url;
+  const schema = input.schema || (z.any() as z.ZodType<DataType>);
   const options = input.options || {};
   const response = await fetch(process.env.NEXT_PUBLIC_API_URL + url, {
     ...options,
@@ -40,15 +40,15 @@ export const axios = Axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
   withCredentials: true,
   headers: {
-    'Content-Type': 'application/json',
-    'x-access-token':
-      typeof window !== 'undefined' ? localStorage.getItem('token') : undefined,
+    "Content-Type": "application/json",
+    "x-access-token":
+      typeof window !== "undefined" ? localStorage.getItem("token") : undefined,
   },
 });
 
 export const axiosS3 = Axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
   headers: {
-    'x-amz-acl': 'public-read',
+    "x-amz-acl": "public-read",
   },
 });

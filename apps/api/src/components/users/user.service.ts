@@ -1,19 +1,17 @@
-import { User } from '@/components/users/user.model';
-import { Project, Deploy } from '../deployments/deployment.model';
-
+import { User } from "@/components/users/user.model";
+import { Project, Deploy } from "../deployments/deployment.model";
 
 async function findOne(args: any) {
-
-  const user = await User.findOne({ _id: args })
+  const user = await User.findOne({ _id: args });
 
   if (!user) {
-    throw new Error('Usuario no encontrado');
+    throw new Error("Usuario no encontrado");
   }
   const projects = await Project.find({
-    '_id': { $in: user.projects }
+    _id: { $in: user.projects },
   });
 
-  let deployments: any[] = []
+  let deployments: any[] = [];
 
   if (projects.length !== 0) {
     deployments = await Promise.all(
@@ -33,18 +31,17 @@ async function findOne(args: any) {
           name_project: project.nameProject,
           env: deploy?.config.env,
           terraform_output: project.terraform_output,
-          apps: deploy?.config.apps
-        }
+          apps: deploy?.config.apps,
+        };
         return schema;
-      }
-      )
+      }),
     );
   }
 
   return {
     user: user,
-    deployments: deployments
-  }
+    deployments: deployments,
+  };
 }
 
 async function findAll(args: any) {
@@ -55,18 +52,17 @@ async function updateOne(args: any) {
   return User.findOneAndUpdate(args.filter, args.update, { new: true });
 }
 
-
 async function createUser(args: any) {
-  const existingUser = await User.findOne({ _id: args._id })
+  const existingUser = await User.findOne({ _id: args._id });
   if (existingUser) {
     if (args.auth.refreshToken !== existingUser.auth.refreshToken) {
       const aux = {
         filter: { _id: args._id },
-        update: { refreshToken: args.auth.refreshToken }
-      }
-      updateOne(aux)
+        update: { refreshToken: args.auth.refreshToken },
+      };
+      updateOne(aux);
     }
-    throw new Error('El usuario ya existe');
+    throw new Error("El usuario ya existe");
   }
   const newUser = new User({ ...args });
   await newUser.save();

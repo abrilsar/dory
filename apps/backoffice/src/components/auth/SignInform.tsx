@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { signIn } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
-import { FormEvent } from 'react';
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { FormEvent } from "react";
 
 export default function SignInform() {
   const router = useRouter();
@@ -10,15 +10,15 @@ export default function SignInform() {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     try {
-      const res = await signIn('credentials', {
-        email: formData.get('email')?.toString(),
-        password: formData.get('password')?.toString(),
+      const res = await signIn("credentials", {
+        email: formData.get("email")?.toString(),
+        password: formData.get("password")?.toString(),
         redirect: false,
       }).catch((res) => {
-        console.log('err', res);
+        console.log("err", res);
       });
       if (res?.ok) {
-        router.push('/');
+        router.push("/");
       }
     } catch (err) {
       console.log(err);

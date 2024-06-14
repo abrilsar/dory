@@ -1,5 +1,5 @@
-import '@testing-library/jest-dom';
+import "@testing-library/jest-dom";
 
 module.exports = {
-  setupFilesAfterEnv: ['jest-fetch-mock'],
+  setupFilesAfterEnv: ["jest-fetch-mock"],
 };

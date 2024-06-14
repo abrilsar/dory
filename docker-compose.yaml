@@ -1,4 +1,4 @@
-version: '3'
+version: "3"
 services:
   api:
     container_name: api
@@ -6,7 +6,7 @@ services:
       context: .
       dockerfile: ./apps/api/Dockerfile
     ports:
-      - '3000:3000'
+      - "3000:3000"
     environment:
       - NODE_ENV=$NODE_ENV
       - PORT=$PORT
@@ -44,4 +44,4 @@ services:
         - NEXT_PUBLIC_API_SS=$NEXT_PUBLIC_API_SS
         - NEXT_PUBLIC_PWD=$NEXT_PUBLIC_PWD
     ports:
-    - '3002:3002'
+      - "3002:3002"

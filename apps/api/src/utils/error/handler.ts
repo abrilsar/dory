@@ -1,5 +1,5 @@
-import type { FastifyRequest, FastifyReply } from 'fastify';
-import { errorTitleDictionary } from './dictionary';
+import type { FastifyRequest, FastifyReply } from "fastify";
+import { errorTitleDictionary } from "./dictionary";
 
 export interface StandardError {
   type: String;
@@ -12,18 +12,18 @@ export interface StandardError {
 export function handleError(
   error: Error,
   request: FastifyRequest,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
-  const status = Number(error.message?.split('-')?.[0] ?? 500);
+  const status = Number(error.message?.split("-")?.[0] ?? 500);
 
-  const type = error.message?.split('-')?.[1] ?? 'default';
+  const type = error.message?.split("-")?.[1] ?? "default";
 
   const standardError: StandardError = {
     type,
     title:
       errorTitleDictionary?.[status]?.[type]?.[
-        request?.headers['accept-language'] ?? 'en'
-      ] ?? 'Unhandled server error',
+        request?.headers["accept-language"] ?? "en"
+      ] ?? "Unhandled server error",
     status,
     detail: `${error.stack ?? error.cause ?? error.message}`,
   };

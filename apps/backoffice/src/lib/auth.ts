@@ -1,28 +1,26 @@
 /* eslint-disable turbo/no-undeclared-env-vars */
-import type { NextAuthOptions } from 'next-auth';
-import { JWT } from 'next-auth/jwt';
-import CredentialsProvider from 'next-auth/providers/credentials';
+import type { NextAuthOptions } from "next-auth";
+import { JWT } from "next-auth/jwt";
+import CredentialsProvider from "next-auth/providers/credentials";
 import GitHubProvider from "next-auth/providers/github";
-import { getFetch } from './api';
+import { getFetch } from "./api";
 
 /**
  * @see https://codevoweb.com/setup-and-use-nextauth-in-nextjs-13-app-directory/
  */
 
-
-
 export const authOptions: NextAuthOptions = {
   session: {
-    strategy: 'jwt',
+    strategy: "jwt",
   },
   pages: {
-    signIn: '/auth-error',
+    signIn: "/auth-error",
   },
   providers: [
     GitHubProvider({
       clientId: process.env.GITHUB_ID as string,
-      clientSecret: process.env.GITHUB_SECRET as string
-    })
+      clientSecret: process.env.GITHUB_SECRET as string,
+    }),
   ],
   callbacks: {
     async jwt({ token, user, account, session, trigger }) {
@@ -34,7 +32,7 @@ export const authOptions: NextAuthOptions = {
           expireAccess: account.expires_at,
           refreshToken: account.refresh_token,
           expireRefresh: account.refresh_token_expires_in,
-        }
+        };
 
         const newUser = {
           _id: account.providerAccountId,
@@ -44,28 +42,28 @@ export const authOptions: NextAuthOptions = {
         };
 
         const options = {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(newUser)
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(newUser),
         };
 
         const data = await getFetch({
-          url: '/v1/create-user',
-          options: options
-        })
+          url: "/v1/create-user",
+          options: options,
+        });
         //Termina creacion BD
 
         return {
           ...token,
           accessToken: account.access_token,
-          id: account.providerAccountId
+          id: account.providerAccountId,
         };
       }
 
       if (trigger === "update") {
-        return { ...token, accessToken: session.user.token }
+        return { ...token, accessToken: session.user.token };
       }
-      return { ...token }
+      return { ...token };
     },
     async session({ session, token, user }) {
       if (token) {
@@ -75,12 +73,11 @@ export const authOptions: NextAuthOptions = {
             ...session.user,
             _id: token.id,
             token: token.accessToken,
-          }
+          },
         };
       }
-      return session
-
-    }
+      return session;
+    },
   },
   // secret: process.env.NEXTAUTH_SECRET,
 };

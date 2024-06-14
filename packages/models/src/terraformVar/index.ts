@@ -1,2 +1,2 @@
-export * from './terraformVar.dto';
-export * from './terraformVar.schema';
+export * from "./terraformVar.dto";
+export * from "./terraformVar.schema";

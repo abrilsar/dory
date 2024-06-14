@@ -1,6 +1,6 @@
-import { model } from 'mongoose';
-import { hash } from 'argon2';
-import { userSchema } from '@avila-tek/models';
+import { model } from "mongoose";
+import { hash } from "argon2";
+import { userSchema } from "@avila-tek/models";
 
 /**
  * @async
@@ -21,4 +21,4 @@ import { userSchema } from '@avila-tek/models';
 //   next();
 // });
 
-export const User = model('User', userSchema);
+export const User = model("User", userSchema);

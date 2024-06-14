@@ -1,16 +1,16 @@
-const { withSentryConfig } = require('@sentry/nextjs');
+const { withSentryConfig } = require("@sentry/nextjs");
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: false,
-  output: 'standalone',
-  transpilePackages: ['@avila-tek/ui', '@avila-tek/models'],
+  output: "standalone",
+  transpilePackages: ["@avila-tek/ui", "@avila-tek/models"],
   experimental: {
     instrumentationHook: true,
   },
 };
 
-module.exports = nextConfig
+module.exports = nextConfig;
 
 // module.exports = withSentryConfig(
 //   nextConfig,

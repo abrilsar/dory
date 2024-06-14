@@ -1,13 +1,13 @@
-import React from 'react';
-import ReactQueryClientExample from '@/components/example-connect-backend/ReactQueryClientExample';
-import { render, waitFor, renderHook } from './test-utils/test-utils';
-import { useUsers } from '@/services/user/hooks';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import fetchMock from 'jest-fetch-mock';
+import React from "react";
+import ReactQueryClientExample from "@/components/example-connect-backend/ReactQueryClientExample";
+import { render, waitFor, renderHook } from "./test-utils/test-utils";
+import { useUsers } from "@/services/user/hooks";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import fetchMock from "jest-fetch-mock";
 
 // Mock the Google Font loader
-jest.mock('next/font/google', () => ({
-  Inter: jest.fn(() => 'MockedInter'),
+jest.mock("next/font/google", () => ({
+  Inter: jest.fn(() => "MockedInter"),
 }));
 
 // Mock the Next.js router

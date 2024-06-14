@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { useUsers } from '@/services/user/hooks';
+import React from "react";
+import { useUsers } from "@/services/user/hooks";
 
 interface ReactQueryClientProps {
   users: any; // FIXME: Replace with the correct type

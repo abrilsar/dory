@@ -1,1 +1,1 @@
-declare module 'xhr2';
+declare module "xhr2";
