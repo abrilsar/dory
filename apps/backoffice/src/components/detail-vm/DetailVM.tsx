@@ -12,7 +12,7 @@ import { Deploy } from "types/interfaces";
 import { DashBoardPageUrl } from "@/constants/urls";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 // import { useHtmlEscape } from "@/hooks/useHtlmEscape";
-import { AnsiUp } from "ansi_up/ansi_up";
+// import { AnsiUp } from "ansi_up/ansi_up";
 import { Terminal } from "@xterm/xterm";
 import "@xterm/xterm/css/xterm.css";
 import { FitAddon } from "@xterm/addon-fit";
@@ -32,7 +32,7 @@ export default function DetailVM() {
     const xterm = useRef<Terminal | null>(null);
     const [allow, setAllow] = useState(true);
     // const { getHtmlEscape } = useHtmlEscape()
-    const ansi_up = new AnsiUp();
+    // const ansi_up = new AnsiUp();
     const privateWords = ["dns_digitalocean_token", "myuser", "password"];
     const [allowSaveInfo, setAllowSaveInfo] = useState("");
 
