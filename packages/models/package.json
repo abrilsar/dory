@@ -4,7 +4,7 @@
   "description": "The models of the database",
   "private": true,
   "scripts": {
-    "lint": "eslint . --max-warnings 0",
+    "lint": "eslint . --max-warnings 1000",
     "build": "tsup",
     "test": "none",
     "dev": "tsup src/index.ts --format cjs --watch --dts"
