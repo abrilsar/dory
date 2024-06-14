@@ -88,7 +88,7 @@ export default function Toast() {
                                                     <button
                                                         type="submit"
                                                         disabled={!isDeployed}
-                                                        className="flex items-center justify-center w-2/3 px-8 py-2 text-base font-medium text-white bg-customColor rounded-md hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:bg-gray-300 disabled:text-gray-700 disabled:cursor-not-allowed"
+                                                        className="flex items-center justify-center w-2/3 px-8 py-2 text-base font-medium text-white bg-customColor rounded-md hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:bg-gray-300 disabled:text-gray-700 disabled:cursor-not-allowed"
                                                     >
                                                         View Site
                                                     </button>

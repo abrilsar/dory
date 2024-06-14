@@ -9,7 +9,7 @@ import fastify, { FastifyReply, FastifyRequest } from 'fastify';
 
 async function executeTerraform(reply: FastifyReply, request: FastifyRequest): Promise<void> {
   try {
-    if (process.env.NODE_ENV === "production"){
+    if (process.env.NODE_ENV === "production") {
       const terraform_innit = childProcess.spawn('terraform', ['init'], { cwd: "terraform/create" });
     }
     const terraform = childProcess.spawn('terraform', ['apply', '-auto-approve'], { cwd: "terraform/create" });
@@ -43,22 +43,26 @@ async function executeTerraform(reply: FastifyReply, request: FastifyRequest): P
   })
 }
 
-async function executeTerraformPullRequest(path: string): Promise<void> {
+async function executeTerraformPullRequest(reply: FastifyReply, request: FastifyRequest): Promise<void> {
   try {
-    if (process.env.NODE_ENV === "production"){
+    if (process.env.NODE_ENV === "production") {
       const terraform_innit = childProcess.spawn('terraform', ['init'], { cwd: "terraform/create" });
     }
-    const terraform = childProcess.spawn('terraform', ['apply', '-auto-approve'], { cwd: `terraform/${path}` });
+    // const terraform = childProcess.spawn('terraform', ['apply', '-auto-approve'], { cwd: `terraform/${request.body}` });
+    const terraform = childProcess.spawn('terraform', ['apply', '-auto-approve'], { cwd: `terraform/pull_request` });
     terraform.stdout.on('data', (data: Buffer) => {
       console.log(`Terraform output: ${data.toString()}`);
+      reply.raw.write(`data: ${data.toString()}\n\n`)
     });
     terraform.stderr.on('data', (data: Buffer) => {
       console.error(`Terraform error: ${data.toString()}`);
+      reply.raw.write(`data: ${data.toString()}\n\n`)
 
     });
     await new Promise<void>((resolve, reject) => {
       terraform.on('close', (code: number) => {
         if (code === 0) {
+          reply.raw.write(`data: ${'Terraform process completed successfully'}\n\n`)
           resolve();
         } else {
           reject(new Error(`Terraform failed with code ${code}`));
@@ -66,9 +70,14 @@ async function executeTerraformPullRequest(path: string): Promise<void> {
       });
     });
   } catch (error) {
-    console.error(`Error executing Terraform: ${error}`);
+    reply.raw.write(`data: ${'Terraform process failed'}\n\n`)
+    reply.raw.end();
     throw new Error('500-Terraform Failed');
   }
+
+  request.raw.on('close', () => {
+    console.log('terminó')
+  })
 }
 
 async function createScript(envState: EnvState) {
@@ -86,12 +95,12 @@ async function createScript(envState: EnvState) {
   }
 }
 
-async function switchVar(envState:EnvState):Promise<string>{
+async function switchVar(envState: EnvState): Promise<string> {
   let envString = envState.envString
   for (const item of envState.appList) {
     const regex = new RegExp(`http://localhost:${item.port}`, 'g');
     envString = envString.replace(regex, `https://${item.name}.deploy-tap.site`);
-}
+  }
   return envString;
 }
 
@@ -131,6 +140,9 @@ async function deleteFile(filePath: string) {
 };
 
 async function generateSSHKeys(file_path: string) {
+  if (!fs.existsSync(process.env.PATH_SSH)) {
+    fs.mkdirSync(process.env.PATH_SSH);
+  }
   if (!fs.existsSync(file_path)) {
     fs.mkdirSync(file_path);
   }
@@ -202,9 +214,10 @@ async function pullRequest(deploy: Deploy, pull: string) {
     const terraformVar = {
       ip: droplet.networks.v4[0].ip_address,
       do_token: process.env.DO_TOKEN as string,
-      pvt_key: `${process.env.PATH_SSH}${deploy.name_project}/id_rsa`,
+      pvt_key: `${process.env.PATH_SSH}/${deploy.name_project}/id_rsa`,
       pwd: process.env.PWD,
       github_repo: deploy.name_repo,
+      name_project: deploy.name_project,
       github_branch: deploy.source,
       docker_command: docker_exec,
       pull: pull === 'true' ? true : false
@@ -232,7 +245,7 @@ async function deleteDroplet(deploy: Deploy) {
       // deleteResource(`domains/deploy-tap.site/records/${idRecordCNAME}`),
     ]);
 
-    await deleteFolder(`${process.env.PATH_SSH}${deploy.name_project}`);
+    await deleteFolder(`${process.env.PATH_SSH}/${deploy.name_project}`);
 
     const data = await getInfoDO({ url: `droplets?name=${deploy.name_project}`, method: 'GET' });
     const dropletId = data.droplets[0].id;

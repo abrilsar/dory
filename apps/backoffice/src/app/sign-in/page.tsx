@@ -1,5 +1,7 @@
 'use client';
 import GitAccount from "@/components/git-account/GitAccount";
+import { useSession } from "next-auth/react";
+import { useEffect } from "react";
 
 export default function SignIn() {
   return (

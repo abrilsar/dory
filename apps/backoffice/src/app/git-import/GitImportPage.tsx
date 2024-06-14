@@ -24,13 +24,13 @@ export default function GitImportPage() {
       const data = await axiosAuth.post('/v1/github-app/get-data', {
         url: `/user/installations`,
       }).then(response => response.data)
+
       if (data.total_count !== 0) {
         const installation = data.installations.find((installation: { app_id: number; account: { id: string } }) => installation.app_id === 883977 && installation.account.id.toString() === session?.user._id);
         installation ? getListInstallation(data, installation) : []
       }
 
     }
-
     if (session && installation_id.length === 0) {
       checkInstallation()
     }

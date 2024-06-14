@@ -46,17 +46,12 @@ export interface TerraformVar {
     github_link: string;
     github_repo: string;
     docker_link: string;
-    puerto: string;
     domain: string;
     pwd: string;
     email: string;
     github_branch: string;
-    puerto_back: string,
     env: boolean,
     docker_command: string
-    api_url: string,
-    endpoint: string,
-    // apps: App[],
 }
 
 export interface AppVariable {

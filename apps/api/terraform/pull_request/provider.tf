@@ -6,6 +6,7 @@ variable "github_branch" {}
 variable "github_repo" {}
 variable "do_token" {}
 variable "pull" {}
+variable "name_project" {}
 
 locals {
   git_command = var.pull ? "git pull origin ${var.github_branch}" : "git reset HEAD~1 && git reset --hard HEAD"
@@ -26,5 +27,6 @@ provider "digitalocean" {
 }
 
 data "digitalocean_ssh_key" "terraform" {
-  name = var.github_repo
+  name = var.name_project
+  # name = "test"
 }

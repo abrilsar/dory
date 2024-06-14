@@ -17,9 +17,16 @@ async function deploy(
 }
 
 async function pullRequestTerraform(
-  request: FastifyRequest<{ Body: string }>,
+  request: FastifyRequest,
   reply: FastifyReply) {
-  return terraformService.executeTerraformPullRequest(request.body);
+  const headers = {
+    'Content-Type': 'text/event-stream',
+    Connection: 'keep-alive',
+    'Cache-Control': 'no-cache',
+    'Access-Control-Allow-Origin': request.headers.origin,
+  };
+  reply.raw.writeHead(200, headers)
+  return terraformService.executeTerraformPullRequest(reply, request);
 }
 
 async function script(

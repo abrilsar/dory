@@ -12,11 +12,13 @@ import { RepoVariable } from "types/interfaces";
 import { PaperAirplaneIcon } from '@heroicons/react/20/solid'
 import Illustration from "@/components/dashboard/Illustration";
 import { INITIAL_VALUE_REPO } from "@/context/data-provider";
+import { useEnvContext } from "@/hooks/useEnvContext";
 
 
 export default function RepositoryPage() {
   const { repoList, setRepoList, installation_id, repoSelected, setRepoSelected } = useDataContex()
   const axiosAuth = useAxiosAuth()
+  const { envState } = useEnvContext()
   const [isLoading, setIsLoading] = useState(true)
   const { data: session } = useSession()
   const linkRepo = useRef<HTMLInputElement>(null)
@@ -50,6 +52,7 @@ export default function RepositoryPage() {
 
         if (repo.visibility === 'public') {
           setRepoSelected({ repo_info: repo as RepoVariable, repo_id: -2 })
+          envState.appList = []
           setInvalidText('* The repository is valid')
           setShowValidation(true)
 
@@ -98,7 +101,8 @@ export default function RepositoryPage() {
 
       } catch (error) { }
     }
-    if (repoList.length === 0) {
+
+    if (repoList.length === 0 && session) {
       getRepoList();
     } else {
       setIsLoading(false)
@@ -111,13 +115,14 @@ export default function RepositoryPage() {
   }, [session, installation_id])
 
   return (
-    <div className="flex flex-col justify-center items-center mt-6 overflow-y-auto h-96 w-full">
+    <div className="flex flex-col justify-center items-center mt-6 overflow-y-auto h-96">
       <p className="text-lg font-semibold w-full sm:w-3/4 md:w-2/3 lg:w-2/4 xl:w-2/4 text-center justify-start items-start py-4">Import Repository</p>
       <div className="items-center flex flex-row gap-x-3 sm:w-3/4 md:w-2/3 lg:w-5/12 xl:w-5/12 pt-4 mb-8 sm:flex-wrap">
         <AccountField />
         <SearchField />
       </div>
-      <div className="w-11/12 sm:w-3/4 md:w-3/5 lg:w-6/12 xl:w-6/12 flex-col overflow-y-scroll border-1 border-gray-700 h-96">
+      <div className="w-11/12 sm:w-3/4 md:w-[34rem] flex-col overflow-y-scroll border-1 border-gray-700 h-96">
+        {/* <div className="w-11/12 sm:w-3/4 md:w-3/5 lg:w-5/12 flex-col overflow-y-scroll border-1 border-gray-700 h-96"> */}
         {isLoading ?
           Array.from({ length: 10 }).map((_, index) => (
             <ProjectFieldSkeleton key={index} />
@@ -138,11 +143,11 @@ export default function RepositoryPage() {
           <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0 relative"> {/* Agregamos la clase 'relative' aquí */}
             <input
               type="text"
-              placeholder={`${repoSelected.repo_id === -2 ? `${repoSelected.repo_info.svn_url}` : 'https://github.com/github-account/example.git'}`}
+              placeholder={`${repoSelected.repo_id === -2 ? `${repoSelected.repo_info.svn_url}` : 'https://github.com/github-account/example'}`}
               className={`w-full border-gray-300 rounded-lg py-1 px-2 focus:outline-none focus:ring-2 text-xs focus:ring-customColor border`}
               ref={linkRepo}
               onClick={() => {
-                setRepoSelected(INITIAL_VALUE_REPO); setAllowSumbit(true)
+                setRepoSelected(INITIAL_VALUE_REPO); setAllowSumbit(true); envState.appList = []
               }}
             />
             <p hidden={!showValidation} className={`mt-2 text-xs ${repoSelected.repo_id === -2 ? 'text-green-500' : 'text-red-500'} font-medium absolute top-full`}>{invalidText}</p>

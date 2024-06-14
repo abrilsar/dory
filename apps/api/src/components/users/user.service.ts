@@ -17,7 +17,7 @@ async function findOne(args: any) {
 
   if (projects.length !== 0) {
     deployments = await Promise.all(
-      projects.map(async (project: { deploy: any; _id: any; status: any; createdAt: any; nameProject: any; terraform_output: any; }) => {
+      projects.map(async (project) => {
         const deploy = await Deploy.findById(project.deploy);
 
         const schema = {

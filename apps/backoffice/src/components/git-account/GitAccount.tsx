@@ -2,7 +2,7 @@
 import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { ConfigProjectPageUrl, DashBoardPageUrl } from "@/constants/urls";
-import { useEffect, useState } from 'react';
+import { useEffect, useState, FormEvent } from 'react';
 
 export default function GitAccount() {
   const router = useRouter();
@@ -13,13 +13,14 @@ export default function GitAccount() {
     }
   }, [session]);
 
-  const handleGithubLogin = async () => {
+  const handleGithubLogin = async (e: any) => {
+    e.preventDefault();
     signIn("github", { callbackUrl: DashBoardPageUrl });
   }
   return (
     <div className="sm:ml-3">
       <button
-        onClick={handleGithubLogin}
+        onClick={(e) => handleGithubLogin(e)}
         type="button"
         className="inline-flex items-center justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-black hover:bg-gray-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-customColor border-gray-400 border-y border-x  w-full sm:w-40 md:w-52 lg:w-64 xl:w-64"
       >

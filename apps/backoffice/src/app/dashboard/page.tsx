@@ -27,13 +27,12 @@ export default function Dashboard() {
     const getUser = async () => {
       try {
         await axios.get(`/v1/users/${session?.user._id}`).then(response => response.data).then(
-          data => { setInfoUser(data), console.log("Data: ", data) }
+          data => setInfoUser(data)
         )
         setIsLoading(false)
       } catch (error) { console.log(error) }
     }
     if (session) getUser()
-    console.log("Session: ", session)
   }, [session]);
 
   return (

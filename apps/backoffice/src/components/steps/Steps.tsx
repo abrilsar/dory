@@ -48,12 +48,12 @@ export default function Steps() {
             setShowValidation(true)
             return;
         }
-        if (activeStep === 2 && envState.terraformVar.name_project === '') {
+        if (activeStep === 2 && (envState.terraformVar.name_project === '' || envState.appList.length === 0)) {
             setShowValidation(true)
             return;
         }
         if (activeStep === 1 && repoSelected.repo_id !== -1) setShowValidation(false)
-        if (activeStep === 2 && envState.terraformVar.name_project !== '') setShowValidation(false)
+        if (activeStep === 2 && envState.terraformVar.name_project !== '' && envState.appList.length > 0) setShowValidation(false)
 
 
         setActiveStep((prevStep) => prevStep + 1)
@@ -70,7 +70,6 @@ export default function Steps() {
     }
 
     const width = `${(100 / (steps.length - 1)) * (activeStep - 1)}%`
-
 
     return (
         <>
@@ -119,7 +118,7 @@ export default function Steps() {
 
                         >
                             <Menu.Items className="absolute right-0 z-10  rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none mb-2 origin-bottom bottom-full border-2 border-red-400 w-max">
-                                <div className='block px-4 py-2 text-xs text-gray-900'>{activeStep === 2 ? 'Please enter a valid name' : (installation_id.length !== 0) ? 'Please select one repository' : 'Please install the app'}</div>
+                                <div className='block px-4 py-2 text-xs text-gray-900'>{activeStep === 2 ? envState.terraformVar.name_project === '' ? 'Please enter a valid name' : 'Please add the main application name' : (installation_id.length !== 0) ? 'Please select one repository' : 'Please install the app'}</div>
                             </Menu.Items>
                         </Transition>}
                     </Menu >

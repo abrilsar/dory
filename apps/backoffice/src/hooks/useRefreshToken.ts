@@ -20,12 +20,10 @@ export const useRefreshToken = (initialErrorStatus: number) => {
         setErrorStatus(newErrorStatus)
         if (newErrorStatus === 401) {
             try {
-                const data: ResponseType = await axios.post('/v1/github-app/refresh-token', { githubId: session?.user._id }).then(response => response.data);
+                const data: ResponseType = await axios.post('/v1/github-app/refresh-token', { _id: session?.user._id }).then(response => response.data);
                 if (data?.error === 'RefreshAccessTokenError' || data?.new_token === null) {
                     signOut({ callbackUrl: SignInPageUrl })
                 } else {
-                    console.log("Antes", session?.user.token)
-
                     const newSession = await update({
                         ...session,
                         user: {
@@ -33,7 +31,7 @@ export const useRefreshToken = (initialErrorStatus: number) => {
                             token: data?.new_token,
                         }
                     });
-                    console.log("Despues", session?.user.token)
+                    console.log("Se cambio el refreshToken", session?.user.token)
                     return newSession
                 }
             } catch (error) {

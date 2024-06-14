@@ -6,6 +6,7 @@ export async function userRouter(
   options?: FastifyPluginOptions
 ) {
   fastify.get('/v1/users/:id', userController.findOne);
-  fastify.get('/v1/users/prueba', () => { return 'hoka' });
+  // fastify.get('/v1/users/:id', () => { return 'hoka' });
+
   fastify.post('/v1/create-user', userController.createUser);
 }

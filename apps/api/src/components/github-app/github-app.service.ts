@@ -2,7 +2,7 @@ import { Octokit } from "@octokit/core";
 import { User } from '@/components/users/user.model';
 import { error } from "console";
 import axios from 'axios';
-// import { errorHandler } from "@sentry/node/types/handlers";
+import { errorHandler } from "@sentry/node/types/handlers";
 
 async function findData(args: any) {
   const octokit = new Octokit({
@@ -26,7 +26,7 @@ async function findData(args: any) {
 }
 
 async function refreshToken(args: any) {
-  const user = await User.findOne({ githubId: args.githubId });
+  const user = await User.findOne(args);
   try {
     const params = new URLSearchParams({
       client_id: process.env.GITHUB_ID as string,
@@ -34,7 +34,6 @@ async function refreshToken(args: any) {
       grant_type: "refresh_token",
       refresh_token: user?.auth.refreshToken as string,
     })
-
     const refreshedTokens = await axios.post("https://github.com/login/oauth/access_token", params).then(response => {
       const params = new URLSearchParams(response.data);
       return {
@@ -43,7 +42,7 @@ async function refreshToken(args: any) {
         scope: params.get('scope'),
       };
     })
-    console.log('El refresh token es: ', refreshToken)
+    console.log('El refresh token es: ', refreshedTokens)
     return {
       new_token: refreshedTokens.accessToken,
       error: ''

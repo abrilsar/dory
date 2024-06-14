@@ -4,47 +4,53 @@ import { useDataContex } from "@/hooks/useDataContext";
 import { useEnvContext } from "@/hooks/useEnvContext";
 import { axios } from "@/lib/api";
 import { Dialog, Transition } from "@headlessui/react";
-import { Accordion } from "flowbite-react"
+import { Accordion } from "flowbite-react";
 import Link from "next/link";
 import { Fragment, useEffect, useState, useRef } from "react";
-import { useSession } from 'next-auth/react';
+import { useSession } from "next-auth/react";
 import { Deploy } from "types/interfaces";
 import { DashBoardPageUrl } from "@/constants/urls";
-import { XMarkIcon } from '@heroicons/react/24/outline'
+import { XMarkIcon } from "@heroicons/react/24/outline";
 // import { useHtmlEscape } from "@/hooks/useHtlmEscape";
-// import { AnsiUp } from 'ansi_up/ansi_up';
-import { Terminal } from '@xterm/xterm';
-import '@xterm/xterm/css/xterm.css';
-import { Poppins, Sanchez } from "next/font/google";
+import { AnsiUp } from "ansi_up/ansi_up";
+import { Terminal } from "@xterm/xterm";
+import "@xterm/xterm/css/xterm.css";
+import { FitAddon } from "@xterm/addon-fit";
 
 export default function DetailVM() {
-    const [output, setOutput] = useState('Building...\n')
-    const { data: session } = useSession()
+    const [output, setOutput] = useState("");
+    const { data: session } = useSession();
     const [hasFetchedData, setHasFetchedData] = useState(false);
-    const { repoSelected, commitRepo } = useDataContex()
-    const { envState } = useEnvContext()
+    const { repoSelected, commitRepo } = useDataContex();
+    const { envState } = useEnvContext();
     const [successProcess, setSuccessProcess] = useState<boolean>();
-    const [deploy, setDeploy] = useState<Deploy>()
+    const [deploy, setDeploy] = useState<Deploy>();
     // const [isDeployed, setIsDeployed] = useState(false)
-    const [open, setOpen] = useState(false)
+    const [open, setOpen] = useState(false);
     // const outputRef = useRef<HTMLDivElement>(null);
     const terminalRef = useRef<HTMLDivElement>(null);
     const xterm = useRef<Terminal | null>(null);
-    const [allow, setAllow] = useState(true)
+    const [allow, setAllow] = useState(true);
     // const { getHtmlEscape } = useHtmlEscape()
-    // const ansi_up = new AnsiUp();
+    const ansi_up = new AnsiUp();
+    const privateWords = ["dns_digitalocean_token", "myuser", "password"];
+    const [allowSaveInfo, setAllowSaveInfo] = useState("");
 
-
+    useEffect(() => {
+        console.log("Output: ", output);
+    }, [output]);
 
     const WebPreview = ({ url }: { url: string }) => {
-        const [screenshotUrl, setScreenshotUrl] = useState<string>('');
-        const apiKey = process.env.NEXT_PUBLIC_API_SS as string
+        const [screenshotUrl, setScreenshotUrl] = useState<string>("");
+        const apiKey = process.env.NEXT_PUBLIC_API_SS as string;
 
         useEffect(() => {
             const websiteUrl = encodeURIComponent(url);
-            fetch(`https://api.screenshotmachine.com/?key=${apiKey}&url=${websiteUrl}&dimension=1024x768`)
-                .then(response => response.blob())
-                .then(blob => {
+            fetch(
+                `https://api.screenshotmachine.com/?key=${apiKey}&url=${websiteUrl}&dimension=1024x768`
+            )
+                .then((response) => response.blob())
+                .then((blob) => {
                     const imageUrl = URL.createObjectURL(blob);
                     setScreenshotUrl(imageUrl);
                 })
@@ -52,96 +58,148 @@ export default function DetailVM() {
         }, []);
 
         if (!screenshotUrl) {
-            return <div className='h-full w-full object-cover object-center bg-gray-200 animate-pulse'></div>;
+            return (
+                <div className="h-full w-full object-cover object-center bg-gray-200 animate-pulse"></div>
+            );
         }
 
         return (
             // <div>
-            <img src={screenshotUrl} alt="Web preview" className="h-full w-full object-cover object-center" />
+            <img
+                src={screenshotUrl}
+                alt="Web preview"
+                className="h-full w-full object-cover object-center"
+            />
             // </div>
         );
     };
 
     function openModal() {
-        setOpen(true)
+        setOpen(true);
+    }
+
+    const getDomain = () => {
+        const verifyDomain = envState.appList.some(
+            (env) => env.name === envState.terraformVar.name_project
+        );
+        return `https://www.${verifyDomain ? envState.terraformVar.name_project.toLowerCase() : envState.appList[0]?.name}.deploy-tap.site`;
+    };
+
+    const getOutput = () => {
+        const w_first = output.split("FINISHED docker:default", 2)
+        let w_last = w_first[1]!.split("Run 'apt list --upgradable'")[0]
+        return w_last
     }
 
     const handleCreateDeployment = async (success: boolean) => {
+        let idFile: string = "";
+        console.log({ name: envState.terraformVar.name_project, info: output });
+        try {
+            idFile = await axios
+                .post("/v1/drive/create", {
+                    name: envState.terraformVar.name_project,
+                    info: getOutput(),
+                })
+                .then((response) => response.data);
+        } catch (error) { }
+
         const info = {
             user_id: session?.user._id,
             project: {
                 nameProject: envState.terraformVar.name_project,
-                status: success ? 'Deployed' : 'Failed',
+                status: success ? "Deployed" : "Failed",
                 createdAt: new Date(),
+                // terraform_output:'',
                 // terraform_output: output,
-                terraform_output: 'aaaa',
-                deploy: null
+                terraform_output: idFile,
+                deploy: null,
             },
             deploy: {
-                terraformVar: '66468c047007ad7c0513c725',
+                terraformVar: "66468c047007ad7c0513c725",
                 config: {
-                    domain: `https://www.${envState.terraformVar.name_project.toLowerCase()}.deploy-tap.site`,
-                    puerto: envState.terraformVar.puerto,
-                    puertoBack: envState.terraformVar.puerto_back,
+                    domain: getDomain(),
                     env: envState.terraformVar.env,
-                    apiUrl: envState.terraformVar.api_url,
-                    endpoints: envState.terraformVar.endpoint,
-                    apps: envState.appList
+                    apps: envState.appList,
                 },
                 repository: {
                     nameRepo: repoSelected.repo_info.name,
                     source: envState.terraformVar.github_branch,
                     repositoryLink: repoSelected.repo_info.svn_url,
                     lastCommit: 0,
-                    commits: [{
-                        _id: commitRepo.sha,
-                        time: commitRepo.date,
-                        previous: -1,
-                    }]
-                }
-            }
-        }
+                    commits: [
+                        {
+                            _id: commitRepo.sha,
+                            time: commitRepo.date,
+                            previous: -1,
+                        },
+                    ],
+                },
+            },
+        };
         try {
-            await axios.post('/v1/create-deployment', info).then(response => response.data).then(data => { setDeploy(data); console.log("Data: ", data) })
+            await axios
+                .post("/v1/create-deployment", info)
+                .then((response) => response.data)
+                .then((data) => setDeploy(data));
         } catch (error) { }
     };
 
-
     const handleApplyTerraform = async () => {
         try {
-            const state = envState.terraformVar
+            const state = envState.terraformVar;
             state.github_repo = repoSelected.repo_info.name;
             state.github_link = repoSelected.repo_info.clone_url;
-            const path = `${process.env.NEXT_PUBLIC_PATH_SSH}${state.name_project}`
-            const publicKey = await axios.post('/v1/terraform/ssh', path);
-            state.pub_key = publicKey.data;
-            state.pvt_key = `${path}/id_rsa`;
-            await axios.post('/v1/terraform/registerSSH', envState)
-            // state.pub_key = "ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBMTUKr+3dcz0x6zRHv6wTW/tLU43/AlpuEH7zsSCbbIAj1R4s95QcVThjcisy2TbClh1tBQ7abL6Hz4zYN21hPY= paola@VenP";
-            // state.pvt_key = `C:/Users/Hp 830 G6/.ssh/id_ecdsa`;
+            if (process.env.NEXT_PUBLIC_PATH_SSH === "C:/Users/Hp 830 G6/.ssh") {
+                state.pub_key =
+                    "ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBMTUKr+3dcz0x6zRHv6wTW/tLU43/AlpuEH7zsSCbbIAj1R4s95QcVThjcisy2TbClh1tBQ7abL6Hz4zYN21hPY= paola@VenP";
+                state.pvt_key = `C:/Users/Hp 830 G6/.ssh/id_ecdsa`;
+            } else {
+                const path = `${process.env.NEXT_PUBLIC_PATH_SSH}/${state.name_project}`;
+                const publicKey = await axios.post("/v1/terraform/ssh", path);
+                state.pub_key = publicKey.data;
+                state.pvt_key = `${path}/id_rsa`;
+                await axios.post("/v1/terraform/registerSSH", envState);
+            }
+            await axios.post(
+                "/v1/terraform/delete",
+                "./terraform/create/terraform.tfstate"
+            );
+            state.env =
+                envState.appList.length === 0 && envState.envString === ""
+                    ? false
+                    : true;
+            state.docker_command = state.env
+                ? "docker-compose --env-file /etc/.env up -d"
+                : "docker-compose up -d";
+            await axios.post("/v1/terraform/var", envState);
+            await axios.post("/v1/terraform/env", envState);
 
-            await axios.post('/v1/terraform/delete', './terraform/create/terraform.tfstate')
-            state.env = envState.appList.length === 0 && envState.envString === '' ? false : true
-            state.docker_command = state.env ? "docker-compose --env-file /etc/.env up -d" : "docker-compose up -d"
-            await axios.post('/v1/terraform/var', envState)
-            await axios.post('/v1/terraform/env', envState)
+            let allow = false;
 
-            const eventSource = new EventSource(`${process.env.NEXT_PUBLIC_API_URL}/v1/terraform/deploy`);
+            const eventSource = new EventSource(
+                `${process.env.NEXT_PUBLIC_API_URL}/v1/terraform/deploy`
+            );
 
             eventSource.onopen = () => {
-                console.log('EventSource connection established');
+                console.log("EventSource connection established");
             };
 
             eventSource.onmessage = (event) => {
-                if (event.data === 'Terraform process completed successfully' || event.data === 'Terraform process failed') {
+                if (
+                    event.data === "Terraform process completed successfully" ||
+                    event.data === "Terraform process failed"
+                ) {
                     eventSource.close();
-                    event.data === 'Terraform process completed successfully' ? setSuccessProcess(true) : setSuccessProcess(false)
+                    //   setOutput((prevOutput) => `${prevOutput}\n${event.data}`);
+                    event.data === "Terraform process completed successfully"
+                        ? setSuccessProcess(true)
+                        : setSuccessProcess(false);
                     // afterTerraform(event.data === 'Terraform process completed successfully' ? true : false)
                 }
-                setOutput((prevOutput) => `${prevOutput}\n${event.data}`);
-                xterm.current?.writeln(event.data);
-                console.log("output 1: ", output)
-
+                if (!privateWords.some((word) => event.data.includes(word))) {
+                    xterm.current?.writeln(event.data);
+                    setOutput((prevOutput) => `${prevOutput}\n${event.data}`);
+                }
             };
         } catch (error) {
             console.log(error);
@@ -150,60 +208,64 @@ export default function DetailVM() {
 
     useEffect(() => {
         if (successProcess !== undefined) {
-            setAllow(false)
-            handleCreateDeployment(successProcess).then(() => openModal())
+            setAllow(false);
+            handleCreateDeployment(successProcess).then(() => openModal());
         }
-    }, [successProcess])
-
-
-    // useEffect(() => {
-    //     if (outputRef.current) {
-    //         outputRef.current.scrollTop = outputRef.current.scrollHeight;
-    //     }
-    // }, [output])
-
+    }, [successProcess]);
 
     useEffect(() => {
         if (terminalRef.current) {
             xterm.current = new Terminal();
+            const fitAddon = new FitAddon();
+            xterm.current.loadAddon(fitAddon);
             const newValue = xterm.current.options.theme;
             // newValue!.background = '#fafbfb';
-            newValue!.foreground = '#000000';
+            newValue!.foreground = "#000000";
             xterm.current.options.theme = { ...newValue };
 
             const newValue2 = xterm.current.options.theme;
-            newValue2!.background = '#ffffff';
+            newValue2!.background = "#ffffff";
             // newValue!.foreground = '#000000';
             xterm.current.options.theme = { ...newValue2 };
 
             xterm.current.options = {
                 fontSize: 16,
-                fontWeight: 200
-            }
+                fontWeight: 200,
+            };
             xterm.current.open(terminalRef.current);
-            xterm.current.textarea?.setAttribute('readonly', 'true'); // Establecer el atributo readonly
-
+            xterm.current.textarea?.setAttribute("readonly", "true"); // Establecer el atributo readonly
+            fitAddon.fit();
+            xterm.current?.writeln("Building...\n");
         }
 
         return () => {
             xterm.current?.dispose();
             xterm.current = null;
         };
-    }, [])
+    }, []);
 
     useEffect(() => {
-        allow && handleApplyTerraform()
+        allow && handleApplyTerraform();
     }, []);
 
     return (
         <>
             <div className="flex justify-center items-center">
                 <Accordion className="mt-8 rounded-t-md w-11/12 sm:w-3/4 md:w-3/4 lg:w-10/12 xl:w-10/12">
-                    <Accordion.Panel className=" h-96 justify-center items-center rounded-t-md w-full">
-                        <Accordion.Title onClick={(e) => e.stopPropagation()} className="bg-{#fafbfb} h-16 px-6 rounded-t-md">Deployment Progress</Accordion.Title>
-                        <div ref={terminalRef} className=" px-6 py-4 h-96 overflow-y-auto overflow-x-hidden whitespace-pre-wrap bg-white">
-                            {/* <div className="whitespace-pre-wrap text-gray-700">{output}</div> */}
-                        </div>
+                    <Accordion.Panel className=" h-96 justify-center items-center rounded-t-md w-full pb-4 px-2">
+                        <Accordion.Title
+                            onClick={(e) => e.stopPropagation()}
+                            className="h-16 px-4 rounded-t-md bg-gray-100"
+                        >
+                            Deployment Progress
+                        </Accordion.Title>
+                        {/* <div className="pb-4 w-full whitespace-normal overflow-x-hidden px-2"> */}
+                        <div
+                            ref={terminalRef}
+                            className="w-full pl-4 pr-1 py-4 h-96 bg-white overflow-y-hidden whitespace-normal"
+                        />
+                        {/* </div> */}
+                        {/* <div className="whitespace-pre-wrap text-gray-700">{output}</div> */}
                     </Accordion.Panel>
                 </Accordion>
             </div>
@@ -247,13 +309,20 @@ export default function DetailVM() {
 
                                         <div className="flex flex-col items-center justify-center w-full">
                                             <div className="sm:col-span-8 lg:col-span-7 ">
-
-                                                <p className="text-xl text-center font-bold text-gray-800 mb-2">{successProcess ? 'Deployment Successful' : 'Deployment Failed'}</p>
-                                                <p className="text-sm font-light text-center mb-4">{successProcess ? 'Congratulations! Your project has been successfully deployed to app' : 'Error! The project could not be deployed. Check the details for more information'}</p>
+                                                <p className="text-xl text-center font-bold text-gray-800 mb-2">
+                                                    {successProcess
+                                                        ? "Deployment Successful"
+                                                        : "Deployment Failed"}
+                                                </p>
+                                                <p className="text-sm font-light text-center mb-4">
+                                                    {successProcess
+                                                        ? "Congratulations! Your project has been successfully deployed to app"
+                                                        : "Error! The project could not be deployed. Check the details for more information"}
+                                                </p>
 
                                                 <div className="aspect-h-1 aspect-w-2 overflow-hidden rounded-lg bg-gray-100 sm:col-span-4 lg:col-span-5">
                                                     <WebPreview url={deploy?.domain!} />
-                                                </div >
+                                                </div>
                                                 <div className="flex items-center justify-center w-full mx-auto mt-7 gap-6">
                                                     <Link
                                                         href={`${DashBoardPageUrl}/deploy/${deploy?._id}`}
@@ -270,17 +339,15 @@ export default function DetailVM() {
                                                         DashBoard
                                                     </Link>
                                                 </div>
-                                            </div >
-                                        </div >
-                                    </div >
-                                </Dialog.Panel >
-                            </Transition.Child >
-                        </div >
-                    </div >
-                </Dialog >
-            </Transition.Root >
+                                            </div>
+                                        </div>
+                                    </div>
+                                </Dialog.Panel>
+                            </Transition.Child>
+                        </div>
+                    </div>
+                </Dialog>
+            </Transition.Root>
         </>
-
-    )
-
+    );
 }

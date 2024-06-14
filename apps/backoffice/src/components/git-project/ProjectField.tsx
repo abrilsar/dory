@@ -14,13 +14,16 @@ type RepositoryPageProps = {
 
 export default function ProjectField({ repo, _id }: RepositoryPageProps) {
     const { repoSelected, setRepoSelected } = useDataContex()
+    const { envState } = useEnvContext()
     const axiosAuth = useAxiosAuth();
 
     function handleOnClick(key: number) {
         if (repoSelected.repo_id === key) {
             setRepoSelected(INITIAL_VALUE_REPO)
+            envState.appList = []
         } else {
             setRepoSelected({ repo_info: repo as RepoVariable, repo_id: key })
+            envState.appList = []
         }
     }
 

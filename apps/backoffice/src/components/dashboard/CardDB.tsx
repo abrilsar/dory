@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import useAxiosAuth from "@/hooks/useAxiosAuth";
 import { useGetDate } from "@/hooks/useDate";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
 
 interface props {
   deploy: Deploy,
@@ -14,6 +15,7 @@ interface props {
 
 export default function CardDB({ deploy, index }: props) {
   const router = useRouter()
+  const { data: session } = useSession()
   const axiosAuth = useAxiosAuth()
   const [update, setUpdate] = useState(false)
   const [color, setColor] = useState('bg-gray-200')
@@ -41,7 +43,6 @@ export default function CardDB({ deploy, index }: props) {
         const infoRepo = deploy.repository_link.split("https://github.com/")[1]
         if (infoRepo) setInfoRepo(infoRepo)
 
-        console.log(`url: /repos/${infoRepo}/branches/${deploy.source}`)
         await axiosAuth.post('/v1/github-app/get-data', {
           url: `/repos/${infoRepo}/branches/${deploy.source}`,
         }).then((response: { data: any; }) => response.data).then((data: { commit: { sha: any; }; }) => data.commit.sha).then((commit: string | undefined) => {
@@ -53,7 +54,7 @@ export default function CardDB({ deploy, index }: props) {
       return false
     }
 
-    if (deploy) getCommit()
+    if (deploy && session) getCommit()
   }, [])
 
   return (

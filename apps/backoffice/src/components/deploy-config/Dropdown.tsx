@@ -7,6 +7,7 @@ import { useDataContex } from '@/hooks/useDataContext';
 import useAxiosAuth from '@/hooks/useAxiosAuth';
 import { useEnvContext } from '@/hooks/useEnvContext';
 import { Aprops } from 'types/interfaces';
+import { useSession } from 'next-auth/react';
 
 
 function classNames(...classes: (string | undefined)[]): string {
@@ -19,6 +20,7 @@ export interface BranchVariable {
 
 export default function Dropdown() {
   const { repoSelected, setCommitRepo, commitRepo } = useDataContex()
+  const { data: session } = useSession()
   const axiosAuth = useAxiosAuth()
   const [branchesList, setBrachesList] = useState<BranchVariable[]>([])
   const [selectedBranch, setSelectedBranch] = useState<string>(repoSelected.repo_info.default_branch);
@@ -37,7 +39,7 @@ export default function Dropdown() {
   }
 
   useEffect(() => {
-    getCommit()
+    session && getCommit()
   }, [selectedBranch])
 
   useEffect(() => {
@@ -48,14 +50,16 @@ export default function Dropdown() {
         ).then(response => response.data).then(data => { setBrachesList(data) })
       } catch (error) { }
     }
-    getBranchesList();
-    getCommit()
-    changeValue({ k: 'github_branch', v: selectedBranch })
+    if (session) {
+      getBranchesList();
+      getCommit()
+      changeValue({ k: 'github_branch', v: selectedBranch })
+    }
   }, [])
 
   return (
-    <Menu as="div" className="relative w-full inline-block text-left">
-      <Menu.Button className="flex items-center justify-between h-6 min-w-32 rounded-md bg-white px-3 py-2 text-sm font-light text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
+    <Menu as="div" className="relative w-[8.5rem] sm:w-36 inline-block text-left">
+      <Menu.Button className="flex items-center justify-between h-6 min-w-[8.5rem] sm:min-w-36 rounded-md bg-white px-3 py-2 text-sm font-light text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
         <div className="overflow-hidden whitespace-nowrap overflow-ellipsis truncate text-sm text-gray-700" >
           {selectedBranch}
         </div>

@@ -2,7 +2,7 @@ import { Deploy, Project } from '@/components/deployments/deployment.model';
 import { User } from '@/components/users/user.model';
 import { deploymentRouter } from './deployment.routes';
 import { Types } from 'mongoose';
-
+import { file } from 'babel-types';
 
 const getSchema = (project: any, deploy: any) => {
   const schema = {
@@ -55,7 +55,6 @@ async function deleteOne(args: any) {
 
 async function createDeployment(args: any) {
   const user = await User.findOne({ _id: args.user_id })
-  console.log("User: ", user)
   const newProject = new Project(args.project);
 
   const newDeploy = new Deploy(args.deploy);
@@ -102,9 +101,7 @@ async function updateOne(args: any) {
 
   } else {
     deploy?.repository.commits.push(args.update)
-    console.log("Commits: ", deploy?.repository.commits)
   }
-  console.log("Taylor")
   if (deploy) await deploy.save()
 }
 
@@ -116,3 +113,7 @@ export const deploymentService = Object.freeze({
   findOne,
   updateOne
 });
+
+
+
+

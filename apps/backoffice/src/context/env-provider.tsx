@@ -29,13 +29,8 @@ const INITIAL_STATE: EnvState = {
         github_link: "",
         github_repo: "",
         github_branch: "",
-        puerto: "",
-        puerto_back: "",
         env: false,
         docker_command: "",
-        api_url: "",
-        endpoint: "",
-        // apps: [{name:}]
     },
     envString: "",
 }

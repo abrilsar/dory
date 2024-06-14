@@ -1,3 +1,4 @@
+import { useEnvContext } from "@/hooks/useEnvContext";
 import FieldEnv from "./FieldEnv";
 import { AppVariable } from "types/interfaces";
 
@@ -7,6 +8,7 @@ interface props {
 }
 
 export default function EnvItem({ index, env }: props) {
+    const { envState } = useEnvContext()
     return (
         // <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0 items-center">
         //     <dt className="text-sm font-medium leading-6 text-gray-900"></dt>
@@ -20,7 +22,7 @@ export default function EnvItem({ index, env }: props) {
             </div>
 
             <div className="mt-1 leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                <FieldEnv key={env.id} msjButton="delete" numero={index} keyEnv={env.name} valueEnv={env.port} />
+                <FieldEnv key={env.id} msjButton="delete" numero={index} keyEnv={env.name} valueEnv={env.port} firstInput={false} />
             </div>
         </div>
     );

@@ -14,6 +14,7 @@ import { userRouter } from '@/components/users/user.routes';
 import { githubAppRouter } from './components/github-app/github-app.routes';
 import { terraformRouter } from '@/components/terraform/terraform.routes';
 import { deploymentRouter } from './components/deployments/deployment.routes';
+import { driveRouter } from './components/drive-service/drive.routes';
 
 global.XMLHttpRequest = xhr2;
 
@@ -44,25 +45,23 @@ export async function createServer() {
 
   await server.register(rateLimit);
   if (process.env.NODE_ENV === 'production') {
-    console.log("NODE_ENV: ", process.env.NODE_ENV)
-    console.log("DATABASE: ", process.env.DATABASE)
     await server.register(helmet);
   } else {
     await swaggerPlugin(server);
   }
 
-  // if (process.env.NODE_ENV === 'production') {
-  //   await server.register(sentryPlugin, {
-  //     dsn: process.env.SENTRY_DSN,
-  //     environment: 'production',
-  //     release: process.env.VERSION,
-  //     integrations: [
-  //       nodeProfilingIntegration(),
-  //       new Integrations.Apollo(),
-  //       new Integrations.Mongo({ useMongoose: true }),
-  //     ],
-  //   });
-  // }
+  if (process.env.NODE_ENV === 'production') {
+    await server.register(sentryPlugin, {
+      dsn: process.env.SENTRY_DSN,
+      environment: 'production',
+      release: process.env.VERSION,
+      integrations: [
+        nodeProfilingIntegration(),
+        new Integrations.Apollo(),
+        new Integrations.Mongo({ useMongoose: true }),
+      ],
+    });
+  }
 
   // routes
   // await server.register(userRoutes, { prefix: '/api' });
@@ -81,6 +80,7 @@ export async function createServer() {
   await server.register(githubAppRouter);
   await server.register(terraformRouter);
   await server.register(deploymentRouter);
+  await server.register(driveRouter);
 
 
   await server.ready();

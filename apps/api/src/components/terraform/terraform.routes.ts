@@ -6,7 +6,7 @@ export async function terraformRouter(
   options?: FastifyPluginOptions
 ) {
   fastify.get('/v1/terraform/deploy', terraformController.deploy);
-  fastify.post('/v1/terraform/deployPullRequest', terraformController.pullRequestTerraform);
+  fastify.get('/v1/terraform/deployPullRequest', terraformController.pullRequestTerraform);
   fastify.post('/v1/terraform/env', terraformController.script);
   fastify.post('/v1/terraform/var', terraformController.terrafromVar);
   fastify.post('/v1/terraform/delete', terraformController.deleteFile);
