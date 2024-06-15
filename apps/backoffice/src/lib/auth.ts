@@ -26,6 +26,12 @@ export const authOptions: NextAuthOptions = {
   ],
   callbacks: {
     async jwt({ token, user, account, session, trigger }) {
+      console.log("Estoy entrando ")
+      console.log("vARIABLES: ")
+      console.log(process.env.GITHUB_ID)
+      console.log(process.env.GITHUB_SECRET)
+      console.log(process.env.NEXTAUTH_SECRET)
+
       if (account) {
         //creacion BD
 
