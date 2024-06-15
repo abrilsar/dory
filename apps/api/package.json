@@ -52,6 +52,7 @@
     "dayjs": "^1.11.10",
     "fastify": "^4.26.2",
     "fastify-plugin": "^4.5.1",
+    "googleapis": "^140.0.0",
     "graphql": "^16.8.1",
     "graphql-compose": "^9.0.10",
     "graphql-compose-connection": "^8.2.1",
