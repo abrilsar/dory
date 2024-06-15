@@ -12,7 +12,6 @@ import { Deploy } from "types/interfaces";
 import { DashBoardPageUrl } from "@/constants/urls";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 // import { useHtmlEscape } from "@/hooks/useHtlmEscape";
-import { AnsiUp } from "ansi_up/ansi_up";
 import { Terminal } from "@xterm/xterm";
 import "@xterm/xterm/css/xterm.css";
 import { FitAddon } from "@xterm/addon-fit";
@@ -32,7 +31,6 @@ export default function DetailVM() {
     const xterm = useRef<Terminal | null>(null);
     const [allow, setAllow] = useState(true);
     // const { getHtmlEscape } = useHtmlEscape()
-    const ansi_up = new AnsiUp();
     const privateWords = ["dns_digitalocean_token", "myuser", "password"];
     const [allowSaveInfo, setAllowSaveInfo] = useState("");
 
@@ -85,20 +83,13 @@ export default function DetailVM() {
         return `https://www.${verifyDomain ? envState.terraformVar.name_project.toLowerCase() : envState.appList[0]?.name}.deploy-tap.site`;
     };
 
-    const getOutput = () => {
-        const w_first = output.split("FINISHED docker:default", 2)
-        let w_last = w_first[1]!.split("Run 'apt list --upgradable'")[0]
-        return w_last
-    }
-
     const handleCreateDeployment = async (success: boolean) => {
         let idFile: string = "";
-        console.log({ name: envState.terraformVar.name_project, info: output });
         try {
             idFile = await axios
                 .post("/v1/drive/create", {
                     name: envState.terraformVar.name_project,
-                    info: getOutput(),
+                    info: output,
                 })
                 .then((response) => response.data);
         } catch (error) { }
@@ -109,8 +100,6 @@ export default function DetailVM() {
                 nameProject: envState.terraformVar.name_project,
                 status: success ? "Deployed" : "Failed",
                 createdAt: new Date(),
-                // terraform_output:'',
-                // terraform_output: output,
                 terraform_output: idFile,
                 deploy: null,
             },
@@ -173,8 +162,6 @@ export default function DetailVM() {
                 : "docker-compose up -d";
             await axios.post("/v1/terraform/var", envState);
             await axios.post("/v1/terraform/env", envState);
-
-            let allow = false;
 
             const eventSource = new EventSource(
                 `${process.env.NEXT_PUBLIC_API_URL}/v1/terraform/deploy`

@@ -41,6 +41,7 @@ export async function createServer() {
     logger: {
       level: 'trace',
     },
+    bodyLimit: 10 * 1024 * 1024,
   });
 
   await server.register(rateLimit);
