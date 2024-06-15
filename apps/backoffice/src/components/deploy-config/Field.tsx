@@ -39,13 +39,13 @@ export default function Field({
     useEffect(() => {
         if (name === "domain") {
             if (inputRef.current?.value && envState.terraformVar.name_project) {
-                inputRef.current.value = `${inputName}${envState.terraformVar.name_project.toLocaleLowerCase()}.deploy-tap.site`;
+                inputRef.current.value = `${inputName}${envState.terraformVar.name_project.toLocaleLowerCase()}.deploytap.site`;
             }
             if (
                 envState.terraformVar.name_project.length === 0 &&
                 inputRef.current?.value
             ) {
-                inputRef.current.value = `${inputName}.deploy-tap.site`;
+                inputRef.current.value = `${inputName}.deploytap.site`;
             }
         }
     }, [inputName, envState.terraformVar.name_project]);

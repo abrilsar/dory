@@ -22,7 +22,7 @@ const INITIAL_STATE: EnvState = {
         region: "sfo3",
         size: "s-4vcpu-8gb-amd",
         docker_link: "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable",
-        domain: "deploy-tap.site",
+        domain: "deploytap.site",
         pwd: process.env.NEXT_PUBLIC_PWD as string,
         email: "paola.marquez@correo.unimet.edu.ve",
         name_project: "",

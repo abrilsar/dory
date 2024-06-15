@@ -99,7 +99,7 @@ async function switchVar(envState: EnvState): Promise<string> {
   let envString = envState.envString
   for (const item of envState.appList) {
     const regex = new RegExp(`http://localhost:${item.port}`, 'g');
-    envString = envString.replace(regex, `https://${item.name}.deploy-tap.site`);
+    envString = envString.replace(regex, `https://${item.name}.deploytap.site`);
   }
   return envString;
 }
@@ -240,7 +240,7 @@ async function deleteDroplet(deploy: Deploy) {
 
     await Promise.all([
       deleteResource(`account/keys/${idSSH}`),
-      deleteResource(`domains/${deploy.name_project}.deploy-tap.site`)
+      deleteResource(`domains/${deploy.name_project}.deploytap.site`)
       // deleteResource(`domains/deploy-tap.site/records/${idRecordA}`),
       // deleteResource(`domains/deploy-tap.site/records/${idRecordCNAME}`),
     ]);

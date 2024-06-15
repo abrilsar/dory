@@ -115,7 +115,7 @@ export default function FieldEnv({ numero, keyEnv, valueEnv, msjButton, firstInp
                     <span className="hidden md:inline">{msjButton}</span>
                 </button>
             </div >
-            <Field title="Domain" disabled={true} hidden={firstInput ? false : true} defaultValue={`${keyEnv}.deploy-tap.site`} name="domain" min="sm:min-w-32" inputName={firstInput === undefined ? undefined : inputValue.toLocaleLowerCase()} />
+            <Field title="Domain" disabled={true} hidden={firstInput ? false : true} defaultValue={`${keyEnv}.deploytap.site`} name="domain" min="sm:min-w-32" inputName={firstInput === undefined ? undefined : inputValue.toLocaleLowerCase()} />
         </>
     )
 }
