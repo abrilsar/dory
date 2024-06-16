@@ -48,7 +48,6 @@ async function executeTerraformPullRequest(reply: FastifyReply, request: Fastify
     if (process.env.NODE_ENV === "production") {
       const terraform_innit = childProcess.spawn('terraform', ['init'], { cwd: "terraform/create" });
     }
-    // const terraform = childProcess.spawn('terraform', ['apply', '-auto-approve'], { cwd: `terraform/${request.body}` });
     const terraform = childProcess.spawn('terraform', ['apply', '-auto-approve'], { cwd: `terraform/pull_request` });
     terraform.stdout.on('data', (data: Buffer) => {
       console.log(`Terraform output: ${data.toString()}`);
@@ -82,11 +81,6 @@ async function executeTerraformPullRequest(reply: FastifyReply, request: Fastify
 
 async function createScript(envState: EnvState) {
   try {
-    // console.log('appList:', envState.appList);
-    // const envContent = `${envState.appList
-    //   .map(envVar => `${envVar.name}=${envVar.port}`)
-    //   .join('\n')}`;
-    // const content = envContent + '\n' + envState.envString
     const switched = await switchVar(envState)
 
     fs.writeFileSync('./terraform/create/.env', switched + '\n');
@@ -107,7 +101,6 @@ async function switchVar(envState: EnvState): Promise<string> {
 
 async function createTerraformVar(envState: EnvState) {
   try {
-    // console.log('terraformVar:', envState.terraformVar);
     const varContent = Object.entries(envState.terraformVar)
       .map(([key, value]) => `${key}="${value}"`)
       .join('\n');
@@ -140,14 +133,25 @@ async function deleteFile(filePath: string) {
 };
 
 async function generateSSHKeys(file_path: string) {
-  if (!fs.existsSync(process.env.PATH_SSH)) {
-    fs.mkdirSync(process.env.PATH_SSH);
+  if (process.env.NODE_ENV === 'production') {
+    childProcess.exec(`sudo mkdir -p ${file_path}`, (error, stdout, stderr) => {
+      if (error) {
+        console.error(`Error al crear el directorio: ${error}`);
+        return;
+      }
+      console.log(`Directorio creado correctamente: ${file_path}`);
+    });
+  } else {
+    if (!fs.existsSync(process.env.PATH_SSH)) {
+      fs.mkdirSync(process.env.PATH_SSH);
+    }
+    if (!fs.existsSync(file_path)) {
+      fs.mkdirSync(file_path);
+    }
   }
-  if (!fs.existsSync(file_path)) {
-    fs.mkdirSync(file_path);
-  }
+
   return new Promise((resolve, reject) => {
-    exec(`ssh-keygen -f ${file_path}/id_rsa -N ""`, (error: ExecException | null, stdout: string, stderr: string) => {
+    exec(`${process.env.NODE_ENV === 'production' ? 'sudo ' : ''}ssh-keygen -f ${file_path}/id_rsa -N ""`, (error: ExecException | null, stdout: string, stderr: string) => {
       if (error) {
         reject(error);
       } else {
@@ -193,7 +197,6 @@ interface props {
 async function deleteFolder(folderPath: string) {
   if (fs.existsSync(folderPath)) {
     try {
-      // await fs.promises.rmdir(folderPath, { recursive: true });
       await fs.promises.rmdir(folderPath, { recursive: true });
       console.log('Carpeta eliminada correctamente');
     } catch (error) {
@@ -235,14 +238,10 @@ async function pullRequest(deploy: Deploy, pull: string) {
 async function deleteDroplet(deploy: Deploy) {
   try {
     const idSSH = await getId(deploy.name_project, 'account/keys', 'ssh');
-    // const idRecordA = await getId(deploy.name_repo.toLowerCase(), 'domains/deploy-tap.site/records', 'record');
-    // const idRecordCNAME = await getId(`www.${deploy.name_repo.toLowerCase()}`, 'domains/deploy-tap.site/records', 'record');
 
     await Promise.all([
       deleteResource(`account/keys/${idSSH}`),
       deleteResource(`domains/${deploy.name_project}.deploytap.site`)
-      // deleteResource(`domains/deploy-tap.site/records/${idRecordA}`),
-      // deleteResource(`domains/deploy-tap.site/records/${idRecordCNAME}`),
     ]);
 
     await deleteFolder(`${process.env.PATH_SSH}/${deploy.name_project}`);
