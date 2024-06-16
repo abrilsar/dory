@@ -66,8 +66,8 @@ async function createUser(args: any) {
       }
       updateOne(aux)
     }
-    // throw new Error('El usuario ya existe');
-    return
+    throw new Error('El usuario ya existe');
+    // return
   }
   const newUser = new User({ ...args });
   await newUser.save();
