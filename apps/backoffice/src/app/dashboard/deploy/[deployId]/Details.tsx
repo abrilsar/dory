@@ -34,7 +34,7 @@ import Link from "next/link";
 import toast from "react-hot-toast";
 import { Terminal } from "@xterm/xterm";
 import "@xterm/xterm/css/xterm.css";
-// import { FitAddon } from "@xterm/addon-fit";
+import { FitAddon } from "@xterm/addon-fit";
 interface DetailsProps {
     deploy: Deploy;
     changes: boolean;
@@ -48,7 +48,10 @@ const WebPreview = ({ url, domain }: { url: string; domain: string }) => {
     useEffect(() => {
         const websiteUrl = encodeURIComponent(url);
         fetch(
-            `https://api.screenshotmachine.com/?key=${apiKey}&url=${websiteUrl}&dimension=1024x768`
+            `
+      https://api.screenshotmachine.com/?key=${apiKey}&url=${websiteUrl}&dimension=1024x768
+      
+      `
         )
             .then((response) => response.blob())
             .then((blob) => {
@@ -460,7 +463,7 @@ function Drop({
                     ? "\n----------- Updating -----------\n"
                     : "\n----------- Roolback -----------\n"
             );
-            // setNewOutput((prevOutput: string) => `${prevOutput}\n${pull ? '----------- Updating -----------\n' : '----------- Roolback -----------\n'}`);
+            // setNewOutput((prevOutput: string) => ${prevOutput}\n${pull ? '----------- Updating -----------\n' : '----------- Roolback -----------\n'});
             newOutput = `${newOutput}\n${pull ? "----------- Updating -----------\n" : "----------- Roolback -----------\n"}`;
 
             return new Promise((resolve, reject) => {
@@ -495,7 +498,7 @@ function Drop({
 
     const handleYes = async () => {
         try {
-            // await axios.post(`/v1/terraform/pullRequest/${pull}`, deploy)
+            // await axios.post(/v1/terraform/pullRequest/${pull}, deploy)
             // await axios.post('/v1/terraform/delete', './terraform/pull_request/terraform.tfstate')
             // const response = await axios.post('/v1/terraform/deployPullRequest', 'pull_request')
             if (setDeployOpen) setDeployOpen(true);
@@ -731,7 +734,6 @@ function AcordionDeploy({
                 for (const line of aux) {
                     await new Promise<void>((resolve) => {
                         xterm.current!.writeln(line);
-                        xterm.current!.writeln(" ");
                         resolve();
                     });
                 }
@@ -746,8 +748,8 @@ function AcordionDeploy({
     useEffect(() => {
         if (terminalRef!.current) {
             xterm.current = new Terminal({ scrollback: 9999999 });
-            // const fitAddon = new FitAddon();
-            // xterm.current.loadAddon(fitAddon);
+            const fitAddon = new FitAddon();
+            xterm.current.loadAddon(fitAddon);
             const newValue = xterm.current.options.theme;
             // newValue!.background = '#fafbfb';
             newValue!.foreground = "#000000";
@@ -765,8 +767,7 @@ function AcordionDeploy({
 
             xterm.current.open(terminalRef.current);
             xterm.current.textarea?.setAttribute("readonly", "true"); // Establecer el atributo readonly
-            // fitAddon.fit();
-
+            fitAddon.fit();
             // getOutput(xterm.current, deploy.terraform_output)
             // getOutput(xterm.current, deploy.terraform_output)
             // console.log('Holis: ', output)

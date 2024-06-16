@@ -3,7 +3,7 @@ import type { NextAuthOptions } from 'next-auth';
 import { JWT } from 'next-auth/jwt';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import GitHubProvider from "next-auth/providers/github";
-import { getFetch } from './api';
+import { axios, getFetch } from './api';
 
 /**
  * @see https://codevoweb.com/setup-and-use-nextauth-in-nextjs-13-app-directory/
@@ -49,10 +49,7 @@ export const authOptions: NextAuthOptions = {
           body: JSON.stringify(newUser)
         };
 
-        const data = await getFetch({
-          url: '/v1/create-user',
-          options: options
-        })
+        await axios.post('/v1/create-user', newUser)
         //Termina creacion BD
 
         return {

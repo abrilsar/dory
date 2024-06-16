@@ -35,9 +35,9 @@ export default function RootLayout({
               <SearchProvider>
                 <Navbar />
                 <Toaster
-                    position="bottom-right"
-                    reverseOrder={false}
-                  />
+                  position="bottom-right"
+                  reverseOrder={false}
+                />
                 {children}
               </SearchProvider>
             </DataProvider>

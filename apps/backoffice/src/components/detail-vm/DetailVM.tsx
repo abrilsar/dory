@@ -14,7 +14,7 @@ import { XMarkIcon } from "@heroicons/react/24/outline";
 // import { useHtmlEscape } from "@/hooks/useHtlmEscape";
 import { Terminal } from "@xterm/xterm";
 import "@xterm/xterm/css/xterm.css";
-// import { FitAddon } from "@xterm/addon-fit";
+import { FitAddon } from "@xterm/addon-fit";
 
 export default function DetailVM() {
     const [output, setOutput] = useState("");
@@ -24,13 +24,10 @@ export default function DetailVM() {
     const { envState } = useEnvContext();
     const [successProcess, setSuccessProcess] = useState<boolean>();
     const [deploy, setDeploy] = useState<Deploy>();
-    // const [isDeployed, setIsDeployed] = useState(false)
     const [open, setOpen] = useState(false);
-    // const outputRef = useRef<HTMLDivElement>(null);
     const terminalRef = useRef<HTMLDivElement>(null);
     const xterm = useRef<Terminal | null>(null);
     const [allow, setAllow] = useState(true);
-    // const { getHtmlEscape } = useHtmlEscape()
     const privateWords = ["dns_digitalocean_token", "myuser", "password"];
     const [allowSaveInfo, setAllowSaveInfo] = useState("");
 
@@ -83,8 +80,15 @@ export default function DetailVM() {
         return `https://www.${verifyDomain ? envState.terraformVar.name_project.toLowerCase() : envState.appList[0]?.name}.deploytap.site`;
     };
 
+    // const getOutput = () => {
+    //   const w_first = output.split("FINISHED docker:default", 2);
+    //   let w_last = w_first[1]!.split("Run 'apt list --upgradable'")[0];
+    //   return w_last;
+    // };
+
     const handleCreateDeployment = async (success: boolean) => {
         let idFile: string = "";
+        console.log({ name: envState.terraformVar.name_project, info: output });
         try {
             idFile = await axios
                 .post("/v1/drive/create", {
@@ -100,6 +104,8 @@ export default function DetailVM() {
                 nameProject: envState.terraformVar.name_project,
                 status: success ? "Deployed" : "Failed",
                 createdAt: new Date(),
+                // terraform_output:'',
+                // terraform_output: output,
                 terraform_output: idFile,
                 deploy: null,
             },
@@ -203,8 +209,8 @@ export default function DetailVM() {
     useEffect(() => {
         if (terminalRef.current) {
             xterm.current = new Terminal();
-            // const fitAddon = new FitAddon();
-            // xterm.current.loadAddon(fitAddon);
+            const fitAddon = new FitAddon();
+            xterm.current.loadAddon(fitAddon);
             const newValue = xterm.current.options.theme;
             // newValue!.background = '#fafbfb';
             newValue!.foreground = "#000000";
@@ -221,7 +227,7 @@ export default function DetailVM() {
             };
             xterm.current.open(terminalRef.current);
             xterm.current.textarea?.setAttribute("readonly", "true"); // Establecer el atributo readonly
-            // fitAddon.fit();
+            fitAddon.fit();
             xterm.current?.writeln("Building...\n");
         }
 

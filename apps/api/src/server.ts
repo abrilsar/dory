@@ -4,9 +4,9 @@ import helmet from '@fastify/helmet';
 import rateLimit from '@fastify/rate-limit';
 import xhr2 from 'xhr2';
 import mongoose from 'mongoose';
-import sentryPlugin from '@immobiliarelabs/fastify-sentry';
-import { nodeProfilingIntegration } from '@sentry/profiling-node';
-import { Integrations } from '@sentry/node';
+// import sentryPlugin from '@immobiliarelabs/fastify-sentry';
+// import { nodeProfilingIntegration } from '@sentry/profiling-node';
+// import { Integrations } from '@sentry/node';
 import { swaggerPlugin } from './plugins/swagger';
 import { handleError } from './utils/error/handler';
 import { authRouter } from '@/components/auth/auth.routes';
@@ -51,18 +51,18 @@ export async function createServer() {
     await swaggerPlugin(server);
   }
 
-  if (process.env.NODE_ENV === 'production') {
-    await server.register(sentryPlugin, {
-      dsn: process.env.SENTRY_DSN,
-      environment: 'production',
-      release: process.env.VERSION,
-      integrations: [
-        nodeProfilingIntegration(),
-        new Integrations.Apollo(),
-        new Integrations.Mongo({ useMongoose: true }),
-      ],
-    });
-  }
+  // if (process.env.NODE_ENV === 'production') {
+  //   await server.register(sentryPlugin, {
+  //     dsn: process.env.SENTRY_DSN,
+  //     environment: 'production',
+  //     release: process.env.VERSION,
+  //     integrations: [
+  //       nodeProfilingIntegration(),
+  //       new Integrations.Apollo(),
+  //       new Integrations.Mongo({ useMongoose: true }),
+  //     ],
+  //   });
+  // }
 
   // routes
   // await server.register(userRoutes, { prefix: '/api' });
