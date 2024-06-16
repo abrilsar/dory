@@ -27,6 +27,7 @@ async function uploadFile(args: any) {
         })
         const fileId = file.data.id;
         return fileId
+        // return '1622YB5zAwBaUX1ILJVgrduTSnUic8tI6'
     } catch (error) {
     }
 }
@@ -36,12 +37,13 @@ async function readFile(args: any) {
         alt: 'media'
     });
     return data
+    // return 'Hola como estas'
 }
 
 async function updateFileContent(args: any) {
     const fileId = args.fileId as string
     const newContent = args.newContent as string
-    // console.log("Nuevo contenido: ", newContent)
+    console.log("Nuevo contenido: ", newContent)
     try {
         const { data: existingFile } = await drive.files.get({
             fileId,
@@ -67,6 +69,7 @@ async function updateFileContent(args: any) {
 
         console.log(`Archivo actualizado: ${updatedFile.name} (${updatedFile.size} bytes)`);
         return updatedFile;
+        // return 'updatedfile'
     } catch (error) {
         console.error('Error al actualizar el archivo:', error);
         throw error;
@@ -80,6 +83,7 @@ async function deleteFile(args: any) {
             fileId: args.fileId
         });
         console.log(`Archivo borrado: ${args.fileId}`);
+        // return 'Se elimino'
     } catch (error) {
         console.error('Error al borrar el archivo:', error);
         throw error;

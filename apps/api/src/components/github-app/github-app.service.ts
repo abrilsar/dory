@@ -2,7 +2,7 @@ import { Octokit } from "@octokit/core";
 import { User } from '@/components/users/user.model';
 import { error } from "console";
 import axios from 'axios';
-// import { errorHandler } from "@sentry/node/types/handlers";
+import { errorHandler } from "@sentry/node/types/handlers";
 
 async function findData(args: any) {
   const octokit = new Octokit({

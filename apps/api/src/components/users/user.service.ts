@@ -17,7 +17,7 @@ async function findOne(args: any) {
 
   if (projects.length !== 0) {
     deployments = await Promise.all(
-      projects.map(async (project: any) => {
+      projects.map(async (project) => {
         const deploy = await Deploy.findById(project.deploy);
 
         const schema = {
@@ -66,8 +66,7 @@ async function createUser(args: any) {
       }
       updateOne(aux)
     }
-    // throw new Error('El usuario ya existe');
-    return
+    throw new Error('El usuario ya existe');
   }
   const newUser = new User({ ...args });
   await newUser.save();

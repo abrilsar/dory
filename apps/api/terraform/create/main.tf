@@ -1,4 +1,4 @@
-resource "digitalocean_droplet" "builder" {
+resource "digitalocean_droplet" "web" {
   image  = "ubuntu-23-10-x64"
   name   = var.name_project
   region = var.region
@@ -44,10 +44,10 @@ resource "digitalocean_droplet" "builder" {
   }
 }
 
-resource "null_resource" "installer" {
-  depends_on = [digitalocean_droplet.builder]
+resource "null_resource" "change_user" {
+  depends_on = [digitalocean_droplet.web]
   connection {
-    host        = digitalocean_droplet.builder.ipv4_address
+    host        = digitalocean_droplet.web.ipv4_address
     user        = "myuser"
     password    = var.pwd
     type        = "ssh"
@@ -57,6 +57,11 @@ resource "null_resource" "installer" {
 
   provisioner "remote-exec" {
     inline = [
+      #Change ip in env
+      # "${local.add_command}",
+      # "sudo sed -i 's|http://localhost:3001|https://${var.apps[1].name}.${var.domain}|g' /etc/.env",
+      # "sudo sed -i 's|http://127.0.0.1:3001|https://${var.apps[1].name}.${var.domain}|g' /etc/.env",
+
       #Git
       "git clone -b ${var.github_branch} ${var.github_link}",
 
@@ -82,15 +87,18 @@ resource "null_resource" "installer" {
       "sudo ufw allow 'Nginx Full'",
 
       # Domains - DNS Records
-      "curl -X POST -H 'Content-Type: application/json' -H 'Authorization: Bearer ${var.do_token}' -d '{\"name\":\"${var.name_project}.${var.domain}\",\"ip_address\":\"${digitalocean_droplet.builder.ipv4_address}\",\"data\":\"${digitalocean_droplet.builder.ipv4_address}\"}' 'https://api.digitalocean.com/v2/domains'",
-      "curl -X POST -H 'Content-Type: application/json' -H 'Authorization: Bearer ${var.do_token}' -d '{\"type\":\"A\",\"name\":\"*\",\"data\":\"${digitalocean_droplet.builder.ipv4_address}\",\"priority\":null,\"port\":null,\"ttl\":60,\"weight\":null,\"flags\":null,\"tag\":null}' 'https://api.digitalocean.com/v2/domains/${var.name_project}.${var.domain}/records'",
+      "curl -X POST -H 'Content-Type: application/json' -H 'Authorization: Bearer ${var.do_token}' -d '{\"name\":\"${var.name_project}.${var.domain}\",\"ip_address\":\"${digitalocean_droplet.web.ipv4_address}\",\"data\":\"${digitalocean_droplet.web.ipv4_address}\"}' 'https://api.digitalocean.com/v2/domains'",
+      "curl -X POST -H 'Content-Type: application/json' -H 'Authorization: Bearer ${var.do_token}' -d '{\"type\":\"A\",\"name\":\"*\",\"data\":\"${digitalocean_droplet.web.ipv4_address}\",\"priority\":null,\"port\":null,\"ttl\":60,\"weight\":null,\"flags\":null,\"tag\":null}' 'https://api.digitalocean.com/v2/domains/${var.name_project}.${var.domain}/records'",
 
       #SSL certificate
       "sudo apt purge -y certbot",
       "sudo snap install --classic certbot",
       "sudo snap set certbot trust-plugin-with-root=ok",
       "sudo snap install certbot-dns-digitalocean",
+      # "sudo apt-get update",
       "sudo ln -s /snap/bin/certbot /usr/bin/certbot",
+      # "sudo ufw delete allow 'Nginx HTTP'",
+      # "sudo DEBIAN_FRONTEND=noninteractive apt-get install certbot python3-certbot-nginx -y",
       "sudo echo 'dns_digitalocean_token = ${var.do_token}' | sudo tee -a ~/certbot-creds.ini",
       "sudo chmod 600 ~/certbot-creds.ini",
       "sudo certbot certonly --dns-digitalocean --dns-digitalocean-credentials ~/certbot-creds.ini -d '*.${lower(var.name_project)}.${var.domain}' -d '${lower(var.name_project)}.${var.domain}' --agree-tos -m ${var.email} --no-eff-email --redirect",
@@ -101,10 +109,10 @@ resource "null_resource" "installer" {
 resource "null_resource" "apps_settings" {
   for_each = { for idx, app in var.apps : idx => app }
 
-  depends_on = [null_resource.installer]
+  depends_on = [null_resource.change_user]
 
   connection {
-    host        = digitalocean_droplet.builder.ipv4_address
+    host        = digitalocean_droplet.web.ipv4_address
     user        = "myuser"
     password    = var.pwd
     type        = "ssh"
@@ -116,7 +124,8 @@ resource "null_resource" "apps_settings" {
     inline = [
       # Server blocks
       "sudo touch /etc/nginx/sites-available/${each.value.name}.${var.domain}",
-      "sudo echo 'server { listen 80; server_name ${each.value.name}.${var.domain} www.${each.value.name}.${var.domain}; return 301 https://${each.value.name}.${var.domain}$request_uri; } server { listen 443 ssl; ssl_certificate /etc/letsencrypt/live/${lower(var.name_project)}.${var.domain}/fullchain.pem; ssl_certificate_key /etc/letsencrypt/live/${lower(var.name_project)}.${var.domain}/privkey.pem; server_name ${each.value.name}.${var.domain} www.${each.value.name}.${var.domain}; location / {proxy_pass http://${digitalocean_droplet.builder.ipv4_address}:${each.value.port}/; proxy_http_version 1.1; proxy_set_header Upgrade $http_upgrade; proxy_set_header Connection 'upgrade'; proxy_set_header Host $host; proxy_cache_bypass $http_upgrade; proxy_set_header X-Real-IP $remote_addr; proxy_set_header Cookie $http_cookie; proxy_pass_header Set-Cookie;}}' | sudo tee -a /etc/nginx/sites-available/${each.value.name}.${var.domain}",
+      "sudo echo 'server { listen 80; server_name ${each.value.name}.${var.domain} www.${each.value.name}.${var.domain}; return 301 https://${each.value.name}.${var.domain}$request_uri; } server { listen 443 ssl; ssl_certificate /etc/letsencrypt/live/${lower(var.name_project)}.${var.domain}/fullchain.pem; ssl_certificate_key /etc/letsencrypt/live/${lower(var.name_project)}.${var.domain}/privkey.pem; server_name ${each.value.name}.${var.domain} www.${each.value.name}.${var.domain}; location / {proxy_pass http://${digitalocean_droplet.web.ipv4_address}:${each.value.port}/; proxy_http_version 1.1; proxy_set_header Upgrade $http_upgrade; proxy_set_header Connection 'upgrade'; proxy_set_header Host $host; proxy_cache_bypass $http_upgrade; proxy_set_header X-Real-IP $remote_addr; proxy_set_header Cookie $http_cookie; proxy_pass_header Set-Cookie;}}' | sudo tee -a /etc/nginx/sites-available/${each.value.name}.${var.domain}",
+      # "sudo echo 'server {listen 80; listen 443 ssl; ssl_certificate /etc/letsencrypt/live/${var.name_project}.${var.domain}/fullchain.pem; ssl_certificate_key /etc/letsencrypt/live/${var.name_project}.${var.domain}/privkey.pem; server_name ${each.value.name}.${var.domain} www.${each.value.name}.${var.domain}; location / {proxy_pass http://${digitalocean_droplet.web.ipv4_address}:${each.value.port}/; proxy_http_version 1.1; proxy_set_header Upgrade $http_upgrade; proxy_set_header Connection 'upgrade'; proxy_set_header Host $host; proxy_cache_bypass $http_upgrade; proxy_set_header X-Real-IP $remote_addr; proxy_set_header Cookie $http_cookie; proxy_pass_header Set-Cookie;}}' | sudo tee -a /etc/nginx/sites-available/${each.value.name}.${var.domain}",
       "sudo ln -s /etc/nginx/sites-available/${each.value.name}.${var.domain} /etc/nginx/sites-enabled/",
     ]
   }
@@ -129,11 +138,11 @@ resource "time_sleep" "wait_6_seconds" {
   }
 }
 
-resource "null_resource" "config" {
+resource "null_resource" "ssl_settings" {
   depends_on = [time_sleep.wait_6_seconds]
 
   connection {
-    host        = digitalocean_droplet.builder.ipv4_address
+    host        = digitalocean_droplet.web.ipv4_address
     user        = "myuser"
     password    = var.pwd
     type        = "ssh"
