@@ -26,7 +26,7 @@ export default function GitImportPage() {
       }).then(response => response.data)
 
       if (data.total_count !== 0) {
-        const installation = data.installations.find((installation: { app_id: number; account: { id: string } }) => installation.app_id === 883977 && installation.account.id.toString() === session?.user._id);
+        const installation = data.installations.find((installation: { app_id: number; account: { id: string } }) => installation.app_id === 922963 && installation.account.id.toString() === session?.user._id);
         installation ? getListInstallation(data, installation) : []
       }
 
