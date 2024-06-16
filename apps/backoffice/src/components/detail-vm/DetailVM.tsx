@@ -14,7 +14,7 @@ import { XMarkIcon } from "@heroicons/react/24/outline";
 // import { useHtmlEscape } from "@/hooks/useHtlmEscape";
 import { Terminal } from "@xterm/xterm";
 import "@xterm/xterm/css/xterm.css";
-// import { FitAddon } from "@xterm/addon-fit";
+import { FitAddon } from "@xterm/addon-fit";
 
 export default function DetailVM() {
     const [output, setOutput] = useState("");
