@@ -14,7 +14,7 @@ import { XMarkIcon } from "@heroicons/react/24/outline";
 // import { useHtmlEscape } from "@/hooks/useHtlmEscape";
 import { Terminal } from "@xterm/xterm";
 import "@xterm/xterm/css/xterm.css";
-import { FitAddon } from "@xterm/addon-fit";
+// import { FitAddon } from "@xterm/addon-fit";
 
 export default function DetailVM() {
     const [output, setOutput] = useState("");
@@ -203,8 +203,8 @@ export default function DetailVM() {
     useEffect(() => {
         if (terminalRef.current) {
             xterm.current = new Terminal();
-            const fitAddon = new FitAddon();
-            xterm.current.loadAddon(fitAddon);
+            // const fitAddon = new FitAddon();
+            // xterm.current.loadAddon(fitAddon);
             const newValue = xterm.current.options.theme;
             // newValue!.background = '#fafbfb';
             newValue!.foreground = "#000000";
@@ -221,7 +221,7 @@ export default function DetailVM() {
             };
             xterm.current.open(terminalRef.current);
             xterm.current.textarea?.setAttribute("readonly", "true"); // Establecer el atributo readonly
-            fitAddon.fit();
+            // fitAddon.fit();
             xterm.current?.writeln("Building...\n");
         }
 
