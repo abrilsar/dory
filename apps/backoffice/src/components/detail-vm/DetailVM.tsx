@@ -201,7 +201,7 @@ export default function DetailVM() {
     }, [successProcess]);
 
     useEffect(() => {
-        // prettier-ignore
+        /* eslint-disable */
         if (terminalRef.current) {
             xterm.current = new Terminal();
             const fitAddon = new FitAddon();
@@ -223,6 +223,7 @@ export default function DetailVM() {
             fitAddon.fit();
             xterm.current?.writeln("Building...\n");
         }
+        /* eslint-enable */
 
         return () => {
             xterm.current?.dispose();

@@ -744,7 +744,7 @@ function AcordionDeploy({
     }, [output, allow]);
 
     useEffect(() => {
-        // prettier-ignore
+        /* eslint-disable */
         if (terminalRef!.current) {
             xterm.current = new Terminal({ scrollback: 9999999 });
             const fitAddon = new FitAddon();
@@ -767,6 +767,8 @@ function AcordionDeploy({
             fitAddon.fit();
             setAllow(true);
         }
+        /* eslint-enable */
+
 
         return () => {
             xterm.current?.dispose();
