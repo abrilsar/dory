@@ -746,7 +746,7 @@ function AcordionDeploy({
     useEffect(() => {
         if (terminalRef!.current) {
             xterm.current = new Terminal({ scrollback: 9999999 });
-            // const fitAddon = new FitAddon();
+            const fitAddon = new FitAddon();
             // xterm.current.loadAddon(fitAddon);
             const newValue = xterm.current.options.theme;
             // newValue!.background = '#fafbfb';

@@ -203,7 +203,7 @@ export default function DetailVM() {
     useEffect(() => {
         if (terminalRef.current) {
             xterm.current = new Terminal();
-            // const fitAddon = new FitAddon();
+            const fitAddon = new FitAddon();
             // xterm.current.loadAddon(fitAddon);
             const newValue = xterm.current.options.theme;
             // newValue!.background = '#fafbfb';
