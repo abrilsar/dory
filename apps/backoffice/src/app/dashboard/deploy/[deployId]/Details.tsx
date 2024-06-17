@@ -34,7 +34,7 @@ import Link from "next/link";
 import toast from "react-hot-toast";
 import { Terminal } from "@xterm/xterm";
 import "@xterm/xterm/css/xterm.css";
-import { FitAddon } from "@xterm/addon-fit";
+// import { FitAddon } from "@xterm/addon-fit";
 interface DetailsProps {
     deploy: Deploy;
     changes: boolean;
@@ -746,7 +746,7 @@ function AcordionDeploy({
     useEffect(() => {
         if (terminalRef!.current) {
             xterm.current = new Terminal({ scrollback: 9999999 });
-            const fitAddon = new FitAddon();
+            // const fitAddon = new FitAddon();
             // xterm.current.loadAddon(fitAddon);
             const newValue = xterm.current.options.theme;
             // newValue!.background = '#fafbfb';
