@@ -31,15 +31,7 @@ module.exports = {
     '.*.js',
     'node_modules/',
   ],
-  overrides: [{ files: ['*.js?(x)', '*.ts?(x)'] }, {
-    files: ['DetailVM.ts'],
-    options: {
-      trailingComma: 'none',
-      tabWidth: 4,
-      useTabs: false,
-      printWidth: 120,
-    }
-  }],
+  overrides: [{ files: ['*.js?(x)', '*.ts?(x)'] }],
   rules: {
     'prettier/prettier': [
       'error',

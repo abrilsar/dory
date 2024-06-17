@@ -38,16 +38,7 @@ module.exports = {
   ],
   overrides: [
     // Force ESLint to detect .tsx files
-    { files: ['*.js?(x)', '*.ts?(x)'], },
-    {
-      files: ['DetailVM.ts'],
-      options: {
-        trailingComma: 'none',
-        tabWidth: 4,
-        useTabs: false,
-        printWidth: 120,
-      }
-    }
+    { files: ['*.js?(x)', '*.ts?(x)'] },
   ],
   rules: {
     'prettier/prettier': [
