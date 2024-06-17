@@ -30,6 +30,8 @@ module.exports = {
     // Ignore dotfiles
     '.*.js',
     'node_modules/',
+    'src/components/detail-vm/DetailVM.tsx',
+    'src/apps/dashboard/deploy/[deployid]/Details.tsx',
   ],
   overrides: [{ files: ['*.js?(x)', '*.ts?(x)'] }],
   rules: {

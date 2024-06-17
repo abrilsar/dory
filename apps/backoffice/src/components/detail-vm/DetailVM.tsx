@@ -201,18 +201,17 @@ export default function DetailVM() {
     }, [successProcess]);
 
     useEffect(() => {
+        // prettier-ignore
         if (terminalRef.current) {
             xterm.current = new Terminal();
             const fitAddon = new FitAddon();
-            // xterm.current.loadAddon(fitAddon);
+            xterm.current.loadAddon(fitAddon);
             const newValue = xterm.current.options.theme;
-            // newValue!.background = '#fafbfb';
             newValue!.foreground = "#000000";
             xterm.current.options.theme = { ...newValue };
 
             const newValue2 = xterm.current.options.theme;
             newValue2!.background = "#ffffff";
-            // newValue!.foreground = '#000000';
             xterm.current.options.theme = { ...newValue2 };
 
             xterm.current.options = {
@@ -221,7 +220,7 @@ export default function DetailVM() {
             };
             xterm.current.open(terminalRef.current);
             xterm.current.textarea?.setAttribute("readonly", "true"); // Establecer el atributo readonly
-            // fitAddon.fit();
+            fitAddon.fit();
             xterm.current?.writeln("Building...\n");
         }
 
